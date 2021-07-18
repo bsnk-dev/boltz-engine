@@ -1,7 +1,11 @@
-export interface ConfigFile {
-  secrets: Secrets;
+export interface Config {
+  secrets: SecretsOrDatabase;
+  database: SecretsOrDatabase;
+
+  adminPort: number;
+  executePort: number;
 }
-export interface Secrets {
+export interface SecretsOrDatabase {
   path: Path;
 }
 export interface Path {

@@ -7,3 +7,6 @@ build
 # secrets and configs
 config.json
 secrets.json
+
+# database
+database/
