@@ -1,0 +1,25 @@
+{
+  "name": "boltz",
+  "version": "1.0.0",
+  "description": "Superfast JS serverless functions",
+  "main": "./build/src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "bsnk-dev",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/cors": "^2.8.12",
+    "@types/express": "^4.17.13",
+    "@typescript-eslint/eslint-plugin": "^4.28.3",
+    "@typescript-eslint/parser": "^4.28.3",
+    "eslint": "^7.31.0",
+    "eslint-config-google": "^0.14.0"
+  },
+  "dependencies": {
+    "celebrate": "^15.0.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "nedb": "^1.8.0"
+  }
+}
