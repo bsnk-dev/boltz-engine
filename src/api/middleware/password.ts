@@ -9,7 +9,7 @@ import {Request, Response} from 'express';
  * @param {Function} next the next middleware function to call
  */
 export default function password(req: Request, res: Response, next: Function) {
-  if (req.body.password !== config.secrets.authentication.password) {
+  if (req.headers.authorization !== ('Basic ' + config.secrets.authentication.password)) {
     res.status(401).send('Wrong password.');
   } else {
     next();
