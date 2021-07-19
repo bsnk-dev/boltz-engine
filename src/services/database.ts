@@ -1,5 +1,5 @@
 import Datastore from 'nedb';
-import { Instance, Volume } from '../interfaces/instances';
+import { Instance, InstanceI, Volume } from '../interfaces/instances';
 import config from './config';
 
 /**
@@ -20,16 +20,16 @@ class DatabasePlatform {
   loadDatabase() {
     this.instancesDB = new Datastore({
       filename: (process.env.PRODUCTION ?
-        config.json.database.productionPath :
-        config.json.database.developmentPath) + 'instances.db',
+        config.json.database.path.production :
+        config.json.database.path.development) + 'instances.db',
       autoload: true,
       onload: () => this.loaded.instances = true,
     });
 
     this.volumesDB = new Datastore({
       filename: (process.env.PRODUCTION ?
-        config.json.database.productionPath :
-        config.json.database.developmentPath) + 'volumes.db',
+        config.json.database.path.production :
+        config.json.database.path.development) + 'volumes.db',
       autoload: true,
       onload: () => this.loaded.volumes = true,
     });
@@ -58,10 +58,10 @@ class DatabaseService extends DatabasePlatform {
   /**
    * Returns an instance by it's id
    * @param {string} id
-   * @return {Instance}
+   * @return {InstanceI}
    * @throws {Error}
    */
-   async getInstanceById(id: string) {
+   async getInstanceById(id: string): Promise<InstanceI | null> {
     return new Promise((resolve, reject) => {
       return this.instancesDB.findOne({ _id: id }, (err, instance) => {
         if (err) {
@@ -136,7 +136,7 @@ class DatabaseService extends DatabasePlatform {
    * @return {Volume | null}
    * @throws {Error}
    */
-  async getVolumeById(id: string) {
+  async getVolumeById(id: string): Promise<Volume> {
     return new Promise((resolve, reject) => {
       this.volumesDB.findOne({ _id: id }, (err, volume) => {
         if (err) {

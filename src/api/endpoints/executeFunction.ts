@@ -1,0 +1,35 @@
+import {Request, Response} from 'express';
+import database from '../../services/database';
+import execution from '../../services/execution';
+import LogManager from '../../services/logManager';
+
+/**
+ * Creates a new instance
+ * @param {Request} req the request
+ * @param {Response} res the response
+ */
+export default async function createInstance(req: Request, res: Response) {
+  const functionID = req.params.id;
+  const query = req.query;
+
+  const logs = new LogManager();
+  logs.updateContext('api', ['execute', functionID]);
+
+  const instance = await database.getInstanceById(functionID).catch(error => {
+    logs.error(`Failed to get instance of called function ${functionID}, ${error}`);
+    res.status(500).end();
+    return;
+  });
+
+  if (!instance) {
+    logs.error(`Failed to get instance of called function ${functionID}, instance not found`);
+    res.status(404).end();
+    return;
+  }
+
+  await execution.execute(instance, req, res).catch(error => {
+    logs.error(`Failed to execute function ${functionID}, ${error}`);
+    res.status(500).end();
+    return;
+  });
+}

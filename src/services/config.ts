@@ -1,5 +1,5 @@
 import {readFileSync} from 'fs';
-import {ConfigFile} from '../interfaces/config';
+import {Config as ConfigFile} from '../interfaces/config';
 import {SecretsConfig} from '../interfaces/secrets';
 
 /**
@@ -37,7 +37,7 @@ class Config {
     /**
      * Gets a configuration value
      */
-    get json() {
+    get json(): ConfigFile {
       return this.config;
     }
 
