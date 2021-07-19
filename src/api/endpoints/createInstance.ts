@@ -11,7 +11,7 @@ export default async function createInstance(req: Request, res: Response) {
   const logs = new LogManager();
   logs.updateContext('api', ['createInstance']);
 
-  const instanceID = await database.createInstance(req.body)
+  const instanceID = await database.createInstance(req.body.name)
       .catch((e) => {
         logs.logError(`Failed to create new instance, ${e}`)
         res.status(500).end();

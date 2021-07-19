@@ -2,7 +2,7 @@ import {Request, Response} from 'express';
 import database from '../../services/database';
 
 /**
- * API endpoint that lists all instances.
+ * API endpoint that lists all volumes.
  * @param {Request} req the request
  * @param {Response} res the response
  */

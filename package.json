@@ -4,6 +4,10 @@
   "description": "Superfast JS serverless functions",
   "main": "./build/src/index.js",
   "scripts": {
+    "start": "node ./build/src/index.js",
+    "dev": "nodemon ./build/src/index.js",
+    "build": "tsc",
+    "build:dev": "tsc -w",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "bsnk-dev",
@@ -15,7 +19,8 @@
     "@typescript-eslint/eslint-plugin": "^4.28.3",
     "@typescript-eslint/parser": "^4.28.3",
     "eslint": "^7.31.0",
-    "eslint-config-google": "^0.14.0"
+    "eslint-config-google": "^0.14.0",
+    "nodemon": "^2.0.12"
   },
   "dependencies": {
     "celebrate": "^15.0.0",

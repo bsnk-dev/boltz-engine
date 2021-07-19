@@ -7,7 +7,7 @@ import LogManager from '../../services/logManager';
  * @param {Request} req the request
  * @param {Response} res the response
  */
-export default async function createVolume(req: Request, res: Response) {
+export default async function createOrUpdateVolume(req: Request, res: Response) {
   const logs = new LogManager();
   logs.updateContext('api', ['createVolume']);
 

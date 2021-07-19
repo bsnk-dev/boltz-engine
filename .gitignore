@@ -10,3 +10,6 @@ secrets.json
 
 # database
 database/
+
+# ide
+.vscode/

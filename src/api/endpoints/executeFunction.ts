@@ -4,11 +4,11 @@ import execution from '../../services/execution';
 import LogManager from '../../services/logManager';
 
 /**
- * Creates a new instance
+ * Lets a function respond to the request
  * @param {Request} req the request
  * @param {Response} res the response
  */
-export default async function createInstance(req: Request, res: Response) {
+export default async function executeFunction(req: Request, res: Response) {
   const functionID = req.params.id;
   const query = req.query;
 
