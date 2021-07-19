@@ -16,7 +16,7 @@ adminRouter.use(password);
 
 adminRouter.use('/listInstances', listInstances);
 
-adminRouter.post('/createInstance', password, celebrate({
+adminRouter.post('/createInstance', celebrate({
   [Segments.BODY]: {
     name: Joi.string().required(),
   }
@@ -46,6 +46,5 @@ adminRouter.post('/deleteInstance', celebrate({
   }}), deleteInstance);
 
 adminRouter.get('/listVolumes', listVolumes);
-
 
 export default adminRouter;

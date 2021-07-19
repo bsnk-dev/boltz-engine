@@ -51,7 +51,7 @@ class DatabaseService extends DatabasePlatform {
    * Returns all instances in the instances database
    * @return {Instance[]}
    */
-  async getAllInstances() {
+  getAllInstances() {
     return this.instancesDB.getAllData();
   }
 
@@ -123,7 +123,7 @@ class DatabaseService extends DatabasePlatform {
    * property
    * @return {Volume[]}
    */
-  async getAllVolumes() {
+  getAllVolumes() {
     return this.volumesDB.getAllData().map((volume) => {
       volume.files = undefined;
       return volume;
