@@ -16,7 +16,7 @@ class VolumesService {
   private gc() {
     this.inMemoryVolumes = this.inMemoryVolumes.filter(volume => {
       if (volume.timeLastUsed < Date.now() - volume.ttl) {
-        this.logs.log(`Removing volume ${volume.volume._id} from memory`);
+        this.logs.log(`Removing volume ${volume.volume.id} from memory`);
         return false;
       }
       return true;
@@ -26,7 +26,7 @@ class VolumesService {
   /**
    * Starts garbage collection
    */
-   constructor() {
+  constructor() {
     setInterval(this.gc.bind(this), config.json.execution.gcInterval);
   }
 
@@ -35,7 +35,7 @@ class VolumesService {
    */
   public async getVolume(volumeID: string): Promise<typeof vol> {
     const cachedVolume = this.inMemoryVolumes.find(vol => {
-      return vol.volume._id === volumeID;
+      return vol.volume.id === volumeID;
     });
 
     if (cachedVolume) {
@@ -62,6 +62,35 @@ class VolumesService {
     });
 
     return loadedVolume;
+  }
+
+  /**
+   * Reloads a volume that was modified in the cache
+   * @param volumeID
+   * @returns {Promise<void>}
+   */
+  public async reloadVolume(volumeID: string): Promise<void> {
+    const vol = this.inMemoryVolumes.find(vol => {
+      return vol.volume.id === volumeID;
+    });
+
+    if (!vol) return;
+
+    this.logs.customContext(['reloadVolume']).log(`Reloading volume ${volumeID}`);
+    
+    const volumeData = await database.getVolumeById(volumeID).catch(err => {
+      throw this.logs.error(`Failed to retrieve volume, ${err}`);
+    });
+
+    if (!volumeData) {
+      throw this.logs.error(`Failed to retrieve volume, ${volumeID} not found`);
+    }
+
+    const volume = new Volume(volumeData);
+    const loadedVolume = Vol.fromJSON(volume.files);
+
+    vol.volume = volume;
+    vol.api = loadedVolume;
   }
 }
 

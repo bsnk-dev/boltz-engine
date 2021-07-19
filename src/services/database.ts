@@ -96,8 +96,21 @@ class DatabaseService extends DatabasePlatform {
    * @param {InstanceI} instance The new instance details
    */
    async updateInstance(id: string, instance: InstanceI) {
+    const updatedDetails: InstanceI = {
+      name: instance.name,
+      volumeID: instance.volumeID,
+    };
+
+    // remove undefined values from updatedDetails
+    const updatedInstance: Partial<InstanceI> = {};
+    for (const key in updatedDetails) {
+      if (updatedDetails[key] !== undefined) {
+        updatedInstance[key] = updatedDetails[key];
+      }
+    }
+
     return new Promise((resolve, reject) => {
-      this.instancesDB.update({ _id: id }, {name: instance.name, volumeID: instance.volumeID}, {}, (err) => {
+      this.instancesDB.update({ _id: id }, {$set: {...updatedInstance}}, {}, (err) => {
         if (err) {
           reject(err);
         }

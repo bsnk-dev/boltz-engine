@@ -1,6 +1,6 @@
 import { vol } from "memfs";
 import { NodeVM } from "vm2";
-import { VolumeI } from "./instances";
+import { Volume } from "./instances";
 
 export interface CachedItemI {
   timeLastUsed: number;
@@ -8,7 +8,7 @@ export interface CachedItemI {
 };
 
 export interface CachedVolumeI extends CachedItemI {
-  volume: VolumeI;
+  volume: Volume;
   api: typeof vol;
 }
 

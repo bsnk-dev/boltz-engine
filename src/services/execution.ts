@@ -1,5 +1,5 @@
 import { NodeVM } from "vm2";
-import { Volume as Vol, vol } from 'memfs';
+import { vol } from 'memfs';
 import { InstanceI } from "../interfaces/instances";
 import LogManager from '../services/logManager';
 import config from "./config";
@@ -7,8 +7,6 @@ import { Request, Response } from "express";
 import { CachedNodeVMI } from "../interfaces/caching";
 import volumes from "./volumes";
 import database from "./database";
-
-
 
 /**
  * Handles the execution of specific cloud functions and vm management
@@ -63,6 +61,7 @@ class ExecutionService {
           config.json.execution.vms.sandboxDirectory.development,
         context: 'sandbox',
       },
+      console: 'off',
     });
 
     this.inMemoryVMs.push({

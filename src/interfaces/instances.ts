@@ -1,4 +1,6 @@
 export interface InstanceI {
+  [index: string]: any;
+
   _id?: string;
   name: string;
   volumeID: string | null;
@@ -23,12 +25,15 @@ export interface VolumeI {
 }
 
 export class Volume {
-  _id?: string;
+  id?: string;
   name: string;
   files: any;
 
-  constructor(volume: Volume) {
+  constructor(volume: VolumeI) {
     this.name = volume.name;
     this.files = JSON.parse(volume.files);
+    if (volume._id) {
+      this.id = volume._id;
+    }
   }
 }
