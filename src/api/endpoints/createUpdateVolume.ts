@@ -1,5 +1,6 @@
 import {Request, Response} from 'express';
 import database from '../../services/database';
+import execution from '../../services/execution';
 import LogManager from '../../services/logManager';
 
 /**
@@ -19,6 +20,8 @@ export default async function createOrUpdateVolume(req: Request, res: Response) 
         res.status(500).end();
         return;
       });
+
+  if (id) await execution.reinitalizeInstancesUsingVolume(id);
   
   res.status(201).json({
     volumeID

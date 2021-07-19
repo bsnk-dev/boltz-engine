@@ -1,32 +1,19 @@
 import { NodeVM } from "vm2";
 import { Volume as Vol, vol } from 'memfs';
-import { InstanceI, Volume, VolumeI } from "../interfaces/instances";
-import database from "./database";
+import { InstanceI } from "../interfaces/instances";
 import LogManager from '../services/logManager';
 import config from "./config";
 import { Request, Response } from "express";
+import { CachedNodeVMI } from "../interfaces/caching";
+import volumes from "./volumes";
+import database from "./database";
 
-interface CachedItemI {
-  timeLastUsed: number;
-  ttl: number;
-};
 
-interface CachedVolumeI extends CachedItemI {
-  volume: VolumeI;
-  api: typeof vol;
-}
-
-interface CachedNodeVMI extends CachedItemI {
-  nodeVm: NodeVM;
-  exports?: any;
-  instanceID: string;
-}
 
 /**
  * Handles the execution of specific cloud functions and vm management
  */
 class ExecutionService {
-  private inMemoryVolumes: CachedVolumeI[] = [];
   private inMemoryVMs: CachedNodeVMI[] = [];
 
   private logs = new LogManager().updateContext('ExecutionService');
@@ -35,15 +22,9 @@ class ExecutionService {
    * Garbage collect unsed cached volumes and vms
    */
   private gc() {
-    this.inMemoryVolumes = this.inMemoryVolumes.filter(volume => {
-      if (volume.timeLastUsed < Date.now() - volume.ttl) {
-        return false;
-      }
-      return true;
-    });
-
     this.inMemoryVMs = this.inMemoryVMs.filter(vm => {
       if (vm.timeLastUsed < Date.now() - vm.ttl) {
+        this.logs.log(`Removing VM ${vm.instanceID} from memory`);
         return false;
       }
       return true;
@@ -51,37 +32,10 @@ class ExecutionService {
   }
 
   /**
-   * Gets a volume, and if it's cached returns that
+   * Starts garbage collection
    */
-  private async getVolume(volumeID: string): Promise<typeof vol> {
-    const cachedVolume = this.inMemoryVolumes.find(vol => {
-      return vol.volume._id === volumeID;
-    });
-
-    if (cachedVolume) {
-      cachedVolume.timeLastUsed = Date.now();
-      return cachedVolume.api;
-    }
-
-    const volumeData = await database.getVolumeById(volumeID).catch(err => {
-      throw this.logs.error(`Failed to retrieve volume, ${err}`);
-    });
-
-    if (!volumeData) {
-      throw this.logs.error(`Failed to retrieve volume, ${volumeID} not found`);
-    }
-
-    const volume = new Volume(volumeData);
-    const loadedVolume = Vol.fromJSON(volume.files);
-
-    this.inMemoryVolumes.push({
-      volume,
-      api: loadedVolume,
-      timeLastUsed: Date.now(),
-      ttl: config.json.execution.ttl.volumes,
-    });
-
-    return loadedVolume;
+  constructor() {
+    setInterval(this.gc.bind(this), config.json.execution.gcInterval);
   }
 
   /**
@@ -121,7 +75,7 @@ class ExecutionService {
     return newVM;
   }
 
-private async getVMExports(instanceID: string): Promise<any> {
+  private async getVMExports(instanceID: string): Promise<any> {
     const cachedVM = this.inMemoryVMs.find(vm => {
       return vm.instanceID === instanceID;
     });
@@ -135,9 +89,11 @@ private async getVMExports(instanceID: string): Promise<any> {
   /**
    * Initalize a cloud function
    */
-  private async initalize(instance: InstanceI): Promise<any> {
-    const volume = await this.getVolume(instance.volumeID || '');
+  public async initalize(instance: InstanceI): Promise<any> {
+    const volume = await volumes.getVolume(instance.volumeID || '');
     const vm = await this.getVM(instance._id || '', volume);
+
+    this.logs.log(`Initalizing VM ${instance._id}`);
 
     /**
      * So the vm has access to the in memory volume
@@ -177,14 +133,31 @@ private async getVMExports(instanceID: string): Promise<any> {
 
     const vmExports = vm.run(`${patchedRequire} ${indexJS}`);
 
-    const cachedVM = 
+    const cachedVM =
       this.inMemoryVMs.find(vm => {
         return vm.instanceID === instance._id;
       });
 
-    if (cachedVM) cachedVM.exports = vmExports;
+    if (cachedVM) {
+      cachedVM.exports = vmExports;
+      cachedVM.volumeID = instance.volumeID || undefined;
+    }
 
     return vmExports;
+  }
+
+  public async reinitalizeInstancesUsingVolume(volumeID: string): Promise<void> {
+    for (const instance of this.inMemoryVMs) {
+      if (instance.volumeID === volumeID) {
+        const instanceData = await database.getInstanceById(instance.instanceID);
+        if (!instanceData) {
+          this.logs.log(`Instance in memory ${instance.instanceID} not found in database`);
+          continue;
+        }
+        
+        this.initalize(instanceData);
+      } 
+    }
   }
 
   /**

@@ -15,6 +15,7 @@ export interface PathOrSandboxDirectory {
 export interface Execution {
   ttl: Ttl;
   vms: Vms;
+  gcInterval: number;
 }
 export interface Ttl {
   volumes: number;
