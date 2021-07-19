@@ -1,5 +1,5 @@
 import Datastore from 'nedb';
-import { Instance, InstanceI, Volume } from '../interfaces/instances';
+import { Instance, InstanceI, Volume, VolumeI } from '../interfaces/instances';
 import config from './config';
 
 /**
@@ -91,15 +91,18 @@ class DatabaseService extends DatabasePlatform {
   }
 
   /**
-   * Updates the instance's name
-   * @param {string} name
+   * Updates an instances details
+   * @param {string} id The id of the instance
+   * @param {InstanceI} instance The new instance details
    */
-   async updateInstanceName(id: string, name: string) {
+   async updateInstance(id: string, instance: InstanceI) {
     return new Promise((resolve, reject) => {
-      this.instancesDB.update({ _id: id }, { name: name }, undefined, (err) => {
+      this.instancesDB.update({ _id: id }, {name: instance.name, volumeID: instance.volumeID}, {}, (err) => {
         if (err) {
           reject(err);
         }
+
+        resolve(undefined);
       });
     });
   }
@@ -114,6 +117,8 @@ class DatabaseService extends DatabasePlatform {
         if (err) {
           reject(err);
         }
+
+        resolve(undefined);
       });
     });
   }
@@ -151,18 +156,20 @@ class DatabaseService extends DatabasePlatform {
    * Creates or updates a volume by it's id
    * @param {string?} id The id of the volume, if undefined, it creates a new volume
    * @param {string} name The name of the volume
-   * @param {any} files The files to be stored in the volume, represented as an object
+   * @param {string} files The files to be stored in the volume, represented as stringified json
    * @return {string} The id of the volume
    */
-  async createOrUpdateVolume(id: string, name: string, files: any) {
-    const volume = new Volume({ name, files });
+  async createOrUpdateVolume(id: string, name: string, files: string) {
+    const volume: VolumeI = {name, files};
 
     return new Promise((resolve, reject) => {
       if (id) {
-        this.volumesDB.update({ _id: id }, volume, undefined, (err) => {
+        this.volumesDB.update({ _id: id }, volume, {}, (err) => {
           if (err) {
             reject(err);
           }
+
+          resolve(id);
         });
       } else {
         this.volumesDB.insert(volume, (err, newVolume) => {
@@ -186,6 +193,8 @@ class DatabaseService extends DatabasePlatform {
         if (err) {
           reject(err);
         }
+
+        resolve(undefined);
       });
     });
   }

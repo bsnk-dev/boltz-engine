@@ -19,16 +19,16 @@ export interface VolumeI {
   _id?: string;
   name: string;
 
-  files: any;
+  files: string;
 }
 
-export class Volume implements VolumeI {
+export class Volume {
   _id?: string;
   name: string;
   files: any;
 
   constructor(volume: Volume) {
     this.name = volume.name;
-    this.files = volume.files;
+    this.files = JSON.parse(volume.files);
   }
 }

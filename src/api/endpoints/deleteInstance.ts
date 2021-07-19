@@ -11,10 +11,10 @@ export default async function deleteInstance(req: Request, res: Response) {
   const logs = new LogManager();
   logs.updateContext('api', ['deleteInstance']);
 
-  const { instanceId } = req.body;
+  const { id } = req.body;
 
-  await database.deleteInstance(instanceId).catch(error => {
-    logs.logError(`Failed to delete instance ${instanceId}, ${error}`);
+  await database.deleteInstance(id).catch(error => {
+    logs.logError(`Failed to delete instance ${id}, ${error}`);
     res.status(500).end();
     return;
   });

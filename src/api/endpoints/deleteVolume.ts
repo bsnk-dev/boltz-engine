@@ -3,16 +3,18 @@ import database from '../../services/database';
 import LogManager from '../../services/logManager';
 
 /**
- * Updates an instances details
+ * Deletes an volume
  * @param {Request} req the request
  * @param {Response} res the response
  */
-export default async function updateInstance(req: Request, res: Response) {
+export default async function deleteVolume(req: Request, res: Response) {
   const logs = new LogManager();
-  logs.updateContext('api', ['updateInstance']);
+  logs.updateContext('api', ['deleteVolume']);
 
-  await database.updateInstance(req.body.id, req.body.instance).catch(err => {
-    logs.logError(`Failed to update instance, ${err}`);
+  const { id } = req.body;
+
+  await database.deleteVolume(id).catch(error => {
+    logs.logError(`Failed to delete volume ${id}, ${error}`);
     res.status(500).end();
     return;
   });

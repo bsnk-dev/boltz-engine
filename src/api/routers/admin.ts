@@ -10,6 +10,7 @@ import getVolume from '../endpoints/getVolume';
 import password from '../middleware/password';
 import {celebrate, Joi, Segments} from 'celebrate';
 import listVolumes from '../endpoints/listVolumes';
+import deleteVolume from '../endpoints/deleteVolume';
 
 const adminRouter = Router();
 adminRouter.use(password);
@@ -26,13 +27,16 @@ adminRouter.post('/createOrUpdateVolume', celebrate({
   [Segments.BODY]: {
     name: Joi.string().required(),
     id: Joi.string(),
-    files: Joi.object().required()
+    files: Joi.string().required()
   }}), createOrUpdateVolume);
 
 adminRouter.post('/updateInstance', celebrate({
   [Segments.BODY]: {
     id: Joi.string().required(),
-    name: Joi.string().required(),
+    instance: Joi.object({
+      name: Joi.string(),
+      volumeID: Joi.string(),
+    }).required(),
   }}), updateInstance);
 
 adminRouter.get('/getVolume', celebrate({
@@ -44,6 +48,11 @@ adminRouter.post('/deleteInstance', celebrate({
   [Segments.BODY]: {
     id: Joi.string().required(),
   }}), deleteInstance);
+
+adminRouter.post('/deleteVolume', celebrate({
+  [Segments.BODY]: {
+    id: Joi.string().required(),
+  }}), deleteVolume);
 
 adminRouter.get('/listVolumes', listVolumes);
 

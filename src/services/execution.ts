@@ -67,6 +67,10 @@ class ExecutionService {
       throw this.logs.error(`Failed to retrieve volume, ${err}`);
     });
 
+    if (!volumeData) {
+      throw this.logs.error(`Failed to retrieve volume, ${volumeID} not found`);
+    }
+
     const volume = new Volume(volumeData);
     const loadedVolume = Vol.fromJSON(volume.files);
 
@@ -192,7 +196,7 @@ private async getVMExports(instanceID: string): Promise<any> {
     });
 
     if (!cachedVM) {
-      this.initalize(instance);
+      await this.initalize(instance);
     }
 
     const vmExports = await this.getVMExports(instance._id || '');

@@ -16,19 +16,19 @@ export default async function executeFunction(req: Request, res: Response) {
   logs.updateContext('api', ['execute', functionID]);
 
   const instance = await database.getInstanceById(functionID).catch(error => {
-    logs.error(`Failed to get instance of called function ${functionID}, ${error}`);
+    logs.logError(`Failed to get instance of called function ${functionID}, ${error}`);
     res.status(500).end();
     return;
   });
 
   if (!instance) {
-    logs.error(`Failed to get instance of called function ${functionID}, instance not found`);
+    logs.logError(`Failed to get instance of called function ${functionID}, instance not found`);
     res.status(404).end();
     return;
   }
 
-  await execution.execute(instance, req, res).catch(error => {
-    logs.error(`Failed to execute function ${functionID}, ${error}`);
+  await execution.execute(instance, req, res).catch((error: Error) => {
+    logs.logError(`Failed to execute function ${functionID}, ${error}. STACK: ${error.stack}`);
     res.status(500).end();
     return;
   });

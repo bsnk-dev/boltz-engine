@@ -24,5 +24,7 @@ export default async function getVolume(req: Request, res: Response) {
     return;
   }
 
-  res.status(200).json(volume).end();
+  const files = JSON.parse(volume.files);
+
+  res.status(200).json({...volume, files}).end();
 }
