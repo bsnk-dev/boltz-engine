@@ -139,13 +139,20 @@ class DatabaseService extends DatabasePlatform {
   /**
    * Returns all volumes in the volumes database and strip the files
    * property
-   * @return {Volume[]}
+   * @return {VolumeI[]}
    */
   getAllVolumes() {
-    return this.volumesDB.getAllData().map((volume) => {
-      volume.files = undefined;
-      return volume;
-    });
+    const newVolumes: VolumeI[] = [];
+
+    for (const volume of this.volumesDB.getAllData()) {
+      newVolumes.push({
+        name: volume.name,
+        files: '',
+        _id: volume._id,
+      });
+    }
+
+    return newVolumes;
   }
 
   /**
