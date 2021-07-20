@@ -27,7 +27,7 @@ adminRouter.post('/createOrUpdateVolume', celebrate({
   [Segments.BODY]: {
     name: Joi.string().required(),
     id: Joi.string(),
-    files: Joi.string().required()
+    files: Joi.string(),
   }}), createOrUpdateVolume);
 
 adminRouter.post('/updateInstance', celebrate({

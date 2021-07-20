@@ -18,6 +18,8 @@ export class Instance implements InstanceI {
 }
 
 export interface VolumeI {
+  [index: string]: any;
+
   _id?: string;
   name: string;
 

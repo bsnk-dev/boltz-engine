@@ -175,9 +175,17 @@ class DatabaseService extends DatabasePlatform {
   async createOrUpdateVolume(id: string, name: string, files: string) {
     const volume: VolumeI = {name, files};
 
+    // removes undefined values from volume
+    const cleanVolume: Partial<VolumeI> = {};
+    for (const key in volume) {
+      if (volume[key] !== undefined) {
+        cleanVolume[key] = volume[key];
+      }
+    }
+
     return new Promise((resolve, reject) => {
       if (id) {
-        this.volumesDB.update({ _id: id }, volume, {}, (err) => {
+        this.volumesDB.update({ _id: id }, { $set: {...cleanVolume}}, {}, (err) => {
           if (err) {
             reject(err);
           }
