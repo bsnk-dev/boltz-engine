@@ -16,6 +16,7 @@
     "@types/cors": "^2.8.12",
     "@types/express": "^4.17.13",
     "@types/nedb": "^1.8.12",
+    "@types/nedb-logger": "^1.8.3",
     "@typescript-eslint/eslint-plugin": "^4.28.3",
     "@typescript-eslint/parser": "^4.28.3",
     "eslint": "^7.31.0",
@@ -28,6 +29,7 @@
     "express": "^4.17.1",
     "memfs": "^3.2.2",
     "nedb": "^1.8.0",
+    "nedb-logger": "^0.1.0",
     "vm2": "^3.9.3"
   }
 }

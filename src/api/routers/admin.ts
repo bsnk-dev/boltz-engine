@@ -6,6 +6,7 @@ import updateInstance from '../endpoints/updateInstance';
 import deleteInstance from '../endpoints/deleteInstance';
 import createOrUpdateVolume from '../endpoints/createUpdateVolume';
 import getVolume from '../endpoints/getVolume';
+import getLogs from '../endpoints/getLogs';
 
 import password from '../middleware/password';
 import {celebrate, Joi, Segments} from 'celebrate';
@@ -55,5 +56,10 @@ adminRouter.post('/deleteVolume', celebrate({
   }}), deleteVolume);
 
 adminRouter.get('/listVolumes', listVolumes);
+
+adminRouter.get('/getLogs', celebrate({
+  [Segments.QUERY]: {
+    id: Joi.string().required(),
+  }}), getLogs);
 
 export default adminRouter;

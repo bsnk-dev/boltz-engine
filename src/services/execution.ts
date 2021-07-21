@@ -7,6 +7,7 @@ import { Request, Response } from "express";
 import { CachedNodeVMI } from "../interfaces/caching";
 import volumes from "./volumes";
 import database from "./database";
+import instancesLogging from "./instancesLogging";
 
 /**
  * Handles the execution of specific cloud functions and vm management
@@ -61,7 +62,7 @@ class ExecutionService {
           config.json.execution.vms.sandboxDirectory.development,
         context: 'sandbox',
       },
-      console: 'off',
+      console: 'redirect',
     });
 
     this.inMemoryVMs.push({
@@ -130,6 +131,8 @@ class ExecutionService {
 
     const indexJS = volume.readFileSync(packageJson.main).toString();
 
+    this.listenToLogs(vm, instance._id || 'unknown_id');
+
     const vmExports = vm.run(`${patchedRequire} ${indexJS}`);
 
     const cachedVM =
@@ -143,6 +146,24 @@ class ExecutionService {
     }
 
     return vmExports;
+  }
+
+  private listenToLogs(vm: NodeVM, instanceID: string) {
+    vm.on('console.log', (data) => {
+      instancesLogging.log('info', data, instanceID);
+    });
+    vm.on('console.info', (data) => {
+      instancesLogging.log('info', data, instanceID);
+    });
+    vm.on('console.error', (data) => {
+      instancesLogging.log('error', data, instanceID);
+    });
+    vm.on('console.war', (data) => {
+      instancesLogging.log('warn', data, instanceID);
+    });
+    vm.on('console.trace', (data) => {
+      instancesLogging.log('error', data, instanceID);
+    });
   }
 
   public async reinitalizeInstancesUsingVolume(volumeID: string): Promise<void> {
