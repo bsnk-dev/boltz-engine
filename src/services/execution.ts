@@ -189,7 +189,10 @@ class ExecutionService {
     });
 
     if (!cachedVM) {
-      await this.initalize(instance);
+      await this.initalize(instance).catch(e => {
+        this.logs.log(`Error initalizing VM ${instance._id}`)
+        instancesLogging.log('error', `Failed to initalize instance, ${e}`, instance._id || 'unknown_id');
+      });
     }
 
     const vmExports = await this.getVMExports(instance._id || '');
