@@ -23,7 +23,7 @@ class InstancesLoggingService {
   log(severity: Severity, message: string, instanceID: string) {
     this.logger.insert({ severity, message, instanceID, timestamp: Date.now() });
 
-    if (this.lastAccessedLogs < Date.now() - this.tmpNedbTTL) {
+    if (this.lastAccessedLogs > Date.now() + this.tmpNedbTTL) {
       this.tmpNedb = null;
     }
   }
@@ -31,7 +31,7 @@ class InstancesLoggingService {
   private get logDB() {
     if (
       this.tmpNedb == undefined ||
-      this.lastAccessedLogs < Date.now() - this.tmpNedbTTL
+      this.lastAccessedLogs > Date.now() + this.tmpNedbTTL
     ) {
       this.tmpNedb = new Datastore({
         filename: (process.env.production == 'true') ? 
@@ -39,6 +39,8 @@ class InstancesLoggingService {
         config.json.database.path.development+'vm-logs.db',
         autoload: true
       });
+    } else {
+      this.tmpNedb.loadDatabase();
     }
 
     this.lastAccessedLogs = Date.now();
@@ -47,7 +49,10 @@ class InstancesLoggingService {
 
   async getLogs(instanceID: string, severity?: Severity) {
     return new Promise((resolve, reject) => {
-      this.logDB.find({ instanceID }, (err: Error, logs: LogI[]) => {
+      const query: {instanceID: string; severity?: Severity} = { instanceID };
+      if (severity) query.severity = severity;
+
+      this.logDB.find(query, (err: Error, logs: LogI[]) => {
         if (err) {
           reject(err);
         } else {
