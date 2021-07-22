@@ -13,3 +13,6 @@ database/
 
 # ide
 .vscode/
+
+# sandbox packages
+sandbox

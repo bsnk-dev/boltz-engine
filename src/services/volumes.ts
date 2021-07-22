@@ -4,6 +4,7 @@ import { Volume as Vol, vol } from 'memfs';
 import database from "./database";
 import LogManager from "./logManager";
 import config from "./config";
+import packages from "./packages";
 
 /** Manages volumes and caching them in memory. */
 class VolumesService {
@@ -53,6 +54,9 @@ class VolumesService {
 
     const volume = new Volume(volumeData);
     const loadedVolume = Vol.fromJSON(volume.files);
+
+    const packageJSON = loadedVolume.readFileSync('/package.json');
+    await packages.installPackages(packageJSON.toString(), volumeID); 
 
     this.inMemoryVolumes.push({
       volume,

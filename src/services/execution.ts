@@ -8,7 +8,10 @@ import { CachedNodeVMI } from "../interfaces/caching";
 import volumes from "./volumes";
 import database from "./database";
 import instancesLogging from "./instancesLogging";
+import packages from "./packages";
+import {join} from 'path';
 
+// Imported modules into VM
 /**
  * Handles the execution of specific cloud functions and vm management
  */
@@ -40,7 +43,7 @@ class ExecutionService {
   /**
    * Gets a vm, and if it's cached returns that
    */
-  private async getVM(instanceID: string, volume: typeof vol): Promise<NodeVM> {
+  private async getVM(instanceID: string, volume: typeof vol, volumeID: string): Promise<NodeVM> {
     const cachedVM = this.inMemoryVMs.find(vm => {
       return vm.instanceID === instanceID;
     });
@@ -52,15 +55,19 @@ class ExecutionService {
 
     const newVM = new NodeVM({
       require: {
-        external: true,
+        external: {
+          modules: ['*'],
+          transitive: true,
+        },
         builtin: ['*'],
         mock: {
-          fs: volume,
+          fs: volume
         },
         root: (process.env.production == 'true') ?
           config.json.execution.vms.sandboxDirectory.production :
           config.json.execution.vms.sandboxDirectory.development,
-        context: 'sandbox',
+        context: 'host',
+        resolve: packages.packageResolverFactory(volumeID),
       },
       console: 'redirect',
     });
@@ -91,7 +98,7 @@ class ExecutionService {
    */
   public async initalize(instance: InstanceI): Promise<any> {
     const volume = await volumes.getVolume(instance.volumeID || '');
-    const vm = await this.getVM(instance._id || '', volume);
+    const vm = await this.getVM(instance._id || '', volume, instance.volumeID || '');
 
     this.logs.log(`Initalizing VM ${instance._id}`);
 
@@ -133,7 +140,11 @@ class ExecutionService {
 
     this.listenToLogs(vm, instance._id || 'unknown_id');
 
-    const vmExports = vm.run(`${patchedRequire} ${indexJS}`);
+    const sandboxDirectory = (process.env.production == 'true') ?
+      config.json.execution.vms.sandboxDirectory.production :
+      config.json.execution.vms.sandboxDirectory.development;
+
+    const vmExports = vm.run(`${patchedRequire} ${indexJS}`, join(sandboxDirectory, instance.volumeID || ''));
 
     const cachedVM =
       this.inMemoryVMs.find(vm => {
@@ -191,17 +202,23 @@ class ExecutionService {
     if (!cachedVM) {
       await this.initalize(instance).catch(e => {
         this.logs.log(`Error initalizing VM ${instance._id}`)
-        instancesLogging.log('error', `Failed to initalize instance, ${e}`, instance._id || 'unknown_id');
+        instancesLogging.log('error', `Failed to initalize instance, ${e} ${(e as Error).stack}`, instance._id || 'unknown_id');
       });
     }
 
     const vmExports = await this.getVMExports(instance._id || '');
 
     if (!vmExports) {
-      throw new Error(`VM exports not found for instance ${instance._id}`);
+      this.logs.log(`VM exports not found for instance ${instance._id}, reloading.`);
+      await this.initalize(instance);
     }
 
-    await vmExports.request(request, response);
+    try {
+      await vmExports.request(request, response);
+    } catch (e) {
+      instancesLogging.log('error', `${e}`, instance._id || 'unknown_id');
+      throw e;
+    }
   }
 }
 
