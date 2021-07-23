@@ -10,24 +10,29 @@ import LogManager from '../../services/logManager';
  */
 export default async function executeFunction(req: Request, res: Response) {
   const functionID = req.params.id;
-  const query = req.query;
-
-  const logs = new LogManager();
-  logs.updateContext('api', ['execute', functionID]);
 
   const instance = await database.getInstanceById(functionID).catch(error => {
+    const logs = new LogManager();
+    logs.updateContext('api', ['execute', functionID]);
+
     logs.logError(`Failed to get instance of called function ${functionID}, ${error}`);
     res.status(500).end();
     return;
   });
 
   if (!instance) {
+    const logs = new LogManager();
+    logs.updateContext('api', ['execute', functionID]);
+
     logs.logError(`Failed to get instance of called function ${functionID}, instance not found`);
     res.status(404).end();
     return;
   }
 
   await execution.execute(instance, req, res).catch((error: Error) => {
+    const logs = new LogManager();
+    logs.updateContext('api', ['execute', functionID]);
+
     logs.logError(`Failed to execute function ${functionID}, ${error}. STACK: ${error.stack}`);
     res.status(500).end();
     return;

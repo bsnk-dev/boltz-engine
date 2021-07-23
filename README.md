@@ -25,7 +25,7 @@ The Boltz engine has a few problems, including:
 ## Benchmarks for current single process Engine
 
 On an instance tasked with repeating the name query paramter back to the testing client (Windows):
-- 15,000 requests.
-- 80 concurrent requests per second.
-- An average latency of 71ms.
-- 1,109 rps.
+- Gave 15,000 requests.
+- Gave 80 concurrent requests max.
+- An average latency of 44.3ms.
+- 1,788 rps.
