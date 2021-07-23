@@ -10,13 +10,15 @@ import database from "./database";
 import instancesLogging from "./instancesLogging";
 import packages from "./packages";
 import {join} from 'path';
+import { waitUntil } from 'async-wait-until';
 
-// Imported modules into VM
+
 /**
  * Handles the execution of specific cloud functions and vm management
  */
 class ExecutionService {
   private inMemoryVMs: CachedNodeVMI[] = [];
+  private isInitalizing = new Map<string, boolean>();
 
   private logs = new LogManager().updateContext('ExecutionService');
 
@@ -99,6 +101,8 @@ class ExecutionService {
    * Initalize a cloud function
    */
   public async initalize(instance: InstanceI): Promise<any> {
+    this.isInitalizing.set(instance.instanceID, true);
+
     const volume = await volumes.getVolume(instance.volumeID || '');
     const vm = await this.getVM(instance._id || '', volume, instance.volumeID || '');
 
@@ -156,6 +160,8 @@ class ExecutionService {
       cachedVM.volumeID = instance.volumeID || undefined;
     }
 
+    this.isInitalizing.delete(instance._id as string);
+
     return vmExports;
   }
 
@@ -195,18 +201,27 @@ class ExecutionService {
    * Executes the cloud function in the vm
    */
   public async execute(instance: InstanceI, request: Request, response: Response): Promise<any> {
+    if (!instance._id) return;
+
     const cachedVM = this.inMemoryVMs.find(vm => {
       return vm.instanceID === instance._id;
     });
 
-    if (!cachedVM) {
-      await this.initalize(instance).catch(e => {
-        this.logs.log(`Error initalizing VM ${instance._id}`)
-        instancesLogging.log('error', `Failed to initalize instance, ${e} ${(e as Error).stack}`, instance._id || 'unknown_id');
-      });
-    }
+    let vmExports;
 
-    const vmExports = await this.getVMExports(instance._id || '');
+    if (!cachedVM) {
+      if (!this.isInitalizing.has(instance._id)) {
+        vmExports = await this.initalize(instance).catch(e => {
+          this.logs.log(`Error initalizing VM ${instance._id}`)
+          instancesLogging.log('error', `Failed to initalize instance, ${e} ${(e as Error).stack}`, instance._id || 'unknown_id');
+        });
+      } else {
+        await waitUntil(() => !this.isInitalizing.has(instance._id as string));
+        vmExports = this.getVMExports(instance._id as string);
+      }
+    } else {
+      vmExports = cachedVM.exports;
+    }
 
     if (!vmExports) {
       this.logs.log(`VM exports not found for instance ${instance._id}, reloading.`);
