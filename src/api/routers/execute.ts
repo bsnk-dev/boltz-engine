@@ -3,6 +3,6 @@ import executeFunction from '../endpoints/executeFunction';
 
 const executionRouter = Router();
 
-executionRouter.get('/:id/', executeFunction);
+executionRouter.all('/:id/', executeFunction);
 
 export default executionRouter;

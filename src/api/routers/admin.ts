@@ -12,6 +12,7 @@ import password from '../middleware/password';
 import {celebrate, Joi, Segments} from 'celebrate';
 import listVolumes from '../endpoints/listVolumes';
 import deleteVolume from '../endpoints/deleteVolume';
+import getServerLoad from '../endpoints/getServerLoad';
 
 const adminRouter = Router();
 adminRouter.use(password);
@@ -61,5 +62,7 @@ adminRouter.get('/getLogs', celebrate({
   [Segments.QUERY]: {
     id: Joi.string().required(),
   }}), getLogs);
+
+adminRouter.get('/getServerLoad', getServerLoad);
 
 export default adminRouter;
