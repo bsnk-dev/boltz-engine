@@ -29,3 +29,5 @@ On an instance tasked with repeating the name query paramter back to the testing
 - Gave 80 concurrent requests max.
 - An average latency of 44.3ms.
 - 1,788 rps.
+
+You can get this up to 2k rps with a higher concurrency, but latency inceases 3x.
