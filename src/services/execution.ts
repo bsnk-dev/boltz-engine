@@ -72,6 +72,8 @@ class ExecutionService {
       console: 'redirect',
     });
 
+    this.listenToLogs(newVM, instanceID);
+
     this.inMemoryVMs.push({
       nodeVm: newVM,
       instanceID,
@@ -137,8 +139,6 @@ class ExecutionService {
     const packageJson = JSON.parse(packageInfo);
 
     const indexJS = volume.readFileSync(packageJson.main).toString();
-
-    this.listenToLogs(vm, instance._id || 'unknown_id');
 
     const sandboxDirectory = (process.env.production == 'true') ?
       config.json.execution.vms.sandboxDirectory.production :

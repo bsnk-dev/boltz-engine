@@ -55,9 +55,6 @@ class VolumesService {
     const volume = new Volume(volumeData);
     const loadedVolume = Vol.fromJSON(volume.files);
 
-    const packageJSON = loadedVolume.readFileSync('/package.json');
-    await packages.installPackages(packageJSON.toString(), volumeID); 
-
     this.inMemoryVolumes.push({
       volume,
       api: loadedVolume,
@@ -66,6 +63,13 @@ class VolumesService {
     });
 
     return loadedVolume;
+  }
+
+  public async installVolumePackages(volumeID: string): Promise<void> {
+    const loadedVolume = await this.getVolume(volumeID);
+    const packageJSON = loadedVolume.readFileSync('/package.json');
+
+    await packages.installPackages(packageJSON.toString(), volumeID); 
   }
 
   /**
