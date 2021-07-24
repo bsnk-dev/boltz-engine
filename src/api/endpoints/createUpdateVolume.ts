@@ -23,9 +23,7 @@ export default async function createOrUpdateVolume(req: Request, res: Response) 
       });
 
   if (id) {
-    await volumes.reloadVolume(id);
     await volumes.installVolumePackages(id);
-    await execution.reinitalizeInstancesUsingVolume(id);
   }
   
   res.status(201).json({

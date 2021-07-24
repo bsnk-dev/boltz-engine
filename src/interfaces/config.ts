@@ -4,6 +4,7 @@ export interface Config {
   execution: Execution;
   adminPort: number;
   executePort: number;
+  dbPort: number;
 }
 export interface SecretsOrDatabase {
   path: PathOrSandboxDirectory;

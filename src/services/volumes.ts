@@ -5,6 +5,7 @@ import database from "./database";
 import LogManager from "./logManager";
 import config from "./config";
 import packages from "./packages";
+import cluster from 'cluster';
 
 /** Manages volumes and caching them in memory. */
 class VolumesService {
@@ -66,6 +67,11 @@ class VolumesService {
   }
 
   public async installVolumePackages(volumeID: string): Promise<void> {
+    if (cluster.isWorker) {
+      console.error('cluster processes can\'t install packages');
+      return;
+    }
+
     const loadedVolume = await this.getVolume(volumeID);
     const packageJSON = loadedVolume.readFileSync('/package.json');
 

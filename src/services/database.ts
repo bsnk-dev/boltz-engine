@@ -1,6 +1,10 @@
-import Datastore from 'nedb';
+// @ts-ignore NEDB-multi doesn't have types
+import DatastoreConnector from 'nedb-multi'
+import Datastore from '../interfaces/nedb-multi';
 import { Instance, InstanceI, Volume, VolumeI } from '../interfaces/instances';
 import config from './config';
+
+const DatastoreLinked = DatastoreConnector(config.json.dbPort);
 
 /**
  * Controls access to the database.
@@ -18,7 +22,7 @@ class DatabasePlatform {
    * Loads all of the database files into the service
    */
   loadDatabase() {
-    this.instancesDB = new Datastore({
+    this.instancesDB = new DatastoreLinked({
       filename: (process.env.PRODUCTION ?
         config.json.database.path.production :
         config.json.database.path.development) + 'instances.db',
@@ -26,7 +30,7 @@ class DatabasePlatform {
       onload: () => this.loaded.instances = true,
     });
 
-    this.volumesDB = new Datastore({
+    this.volumesDB = new DatastoreLinked({
       filename: (process.env.PRODUCTION ?
         config.json.database.path.production :
         config.json.database.path.development) + 'volumes.db',

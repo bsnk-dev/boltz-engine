@@ -18,7 +18,7 @@ import { waitUntil } from 'async-wait-until';
  */
 class ExecutionService {
   private inMemoryVMs: CachedNodeVMI[] = [];
-  private isInitalizing = new Map<string, boolean>();
+  private isInitalizing = new Map<string, boolean>(); // TODO - needs to work with multithreading cause package installs but idk if that's entirely nessecary
 
   private logs = new LogManager().updateContext('ExecutionService');
 
