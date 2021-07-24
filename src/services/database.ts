@@ -30,6 +30,8 @@ class DatabasePlatform {
       onload: () => this.loaded.instances = true,
     });
 
+    this.instancesDB.loadDatabase();
+
     this.volumesDB = new DatastoreLinked({
       filename: (process.env.PRODUCTION ?
         config.json.database.path.production :
@@ -37,6 +39,8 @@ class DatabasePlatform {
       autoload: true,
       onload: () => this.loaded.volumes = true,
     });
+
+    this.volumesDB.loadDatabase();
   }
 
   /**

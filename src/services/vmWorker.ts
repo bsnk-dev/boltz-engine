@@ -22,7 +22,7 @@ class VMWorker {
     this.app.use(executionRouter);
     http.createServer(this.app).listen(this.port);
 
-    console.log(`Listening for execution requests on port ${config.json.executePort}`);
+    console.log(`Listening for execution requests on port ${config.json.executePort} from worker ${process.pid}`);
 
     if (cluster.isWorker) {
       process.on('message', async (msg: any) => {
