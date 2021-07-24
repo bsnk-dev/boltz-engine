@@ -6,8 +6,8 @@ import database from '../../services/database';
  * @param {Request} req the request
  * @param {Response} res the response
  */
-export default function listVolumes(req: Request, res: Response) {
-  const allVolumes = database.getAllVolumes();
+export default async function listVolumes(req: Request, res: Response) {
+  const allVolumes = await database.getAllVolumes();
 
   res.status(200).json(allVolumes).end();
 }

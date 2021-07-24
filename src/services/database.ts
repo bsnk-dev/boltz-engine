@@ -59,8 +59,15 @@ class DatabaseService extends DatabasePlatform {
    * Returns all instances in the instances database
    * @return {Instance[]}
    */
-  getAllInstances() {
-    return this.instancesDB.getAllData();
+  async getAllInstances(): Promise<InstanceI[]> {
+    return new Promise((resolve, reject) => {
+      this.instancesDB.find({}, (err: Error, instances: InstanceI[]) => {
+        if (err) {
+          reject(err);
+        }
+        resolve(instances);
+      });
+    });
   }
 
   /**
@@ -149,10 +156,19 @@ class DatabaseService extends DatabasePlatform {
    * property
    * @return {VolumeI[]}
    */
-  getAllVolumes() {
+  async getAllVolumes() {
+    const volumes: VolumeI[] = await new Promise((resolve, reject) => {
+      this.volumesDB.find({}, (err: Error, vols: VolumeI[]) => {
+        if (err) {
+          reject(err);
+        }
+        resolve(vols);
+      });
+    });
+
     const newVolumes: VolumeI[] = [];
 
-    for (const volume of this.volumesDB.getAllData()) {
+    for (const volume of volumes) {
       newVolumes.push({
         name: volume.name,
         files: '',

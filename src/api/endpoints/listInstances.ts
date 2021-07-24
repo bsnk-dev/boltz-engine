@@ -6,8 +6,8 @@ import database from '../../services/database';
  * @param {Request} req the request
  * @param {Response} res the response
  */
-export default function listInstances(req: Request, res: Response) {
-  const allInstances = database.getAllInstances();
+export default async function listInstances(req: Request, res: Response) {
+  const allInstances = await database.getAllInstances();
 
   res.status(200).json(allInstances).end();
 }
