@@ -84,6 +84,15 @@ class VolumesService {
    * @returns {Promise<void>}
    */
   public async reloadVolume(volumeID: string): Promise<void> {
+    if (cluster.isPrimary && cluster.workers) {
+      for (const workerID in cluster.workers) {
+        cluster.workers[workerID]?.send({type: 'reloadVolume', id: volumeID});
+      }
+
+      // Primary doesn't execute VM instances
+      return;
+    }
+
     const vol = this.inMemoryVolumes.find(vol => {
       return vol.volume.id === volumeID;
     });

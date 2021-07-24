@@ -24,6 +24,7 @@ export default async function createOrUpdateVolume(req: Request, res: Response) 
 
   if (id) {
     await volumes.installVolumePackages(id);
+    await volumes.reloadVolume(id);
   }
   
   res.status(201).json({
