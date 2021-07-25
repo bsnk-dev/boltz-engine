@@ -22,26 +22,11 @@ The Boltz engine has a few problems, including:
 - Cross contamination of packages used in volumes between seperate vm instances.
 - Large package install size because of the implementation of indivdual volume node_modules sandboxes.
 
-## Benchmarks for current single process Engine
+## Benchmarks
 
-Mac benchmark for instance tasked with repeating your name from the name parameter and adding an exclamation mark:
+Using a GCP Cloud Shell Instance, a function with the task of repeating the ``name`` query parameter with an exclamation mark it performed as follows:
 
-(This is local, not over a network)
+- Using a single worker process: ``4500-5000`` requests per second at a latency of ``50ms``.
+- Using four worker processes: ``5500-6000`` requests per second at a latency of ``4-8ms``.
 
-``` 
-Max requests:        15000
-Concurrency level:   80
-Agent:               keepalive
-
-Completed requests:  15000
-Total errors:        0
-Total time:          4.731024274 s
-Requests per second: 3171
-Mean latency:        25 ms
-
-Percentage of the requests served within a certain time
-  50%      21 ms
-  90%      32 ms
-  95%      45 ms
-  99%      59 ms
-100%      103 ms (longest request)```
+Using the same function with 1 worker we can achieve ``1000`` simultaneous connections doing ``200,000`` requests with a latency of about ``100ms`` and ``5600rps``. 

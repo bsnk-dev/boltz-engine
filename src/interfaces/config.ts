@@ -5,6 +5,7 @@ export interface Config {
   adminPort: number;
   executePort: number;
   dbPort: number;
+  maxWorkerProcesses: number;
 }
 export interface SecretsOrDatabase {
   path: PathOrSandboxDirectory;
