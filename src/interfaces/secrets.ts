@@ -3,4 +3,5 @@ export interface SecretsConfig {
 }
 export interface Authentication {
   password: string;
+  username: string;
 }

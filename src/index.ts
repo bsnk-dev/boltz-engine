@@ -15,5 +15,5 @@ import './api';
 import VMWorker from './services/vmWorker';
 
 if (cluster.isWorker) {
-  const worker = new VMWorker();
+  new VMWorker();
 }
