@@ -14,7 +14,7 @@ export default function password(req: Request, res: Response, next: Function) {
     const basic = req.headers.authorization.split(' ');
     if (basic[0] === 'Basic') {
       const credentials = Buffer.from(basic[1], 'base64').toString().split(':');
-      if (credentials[0] === config.secrets.authentication.password && credentials[1] === config.secrets.authentication.username) {
+      if (credentials[0] === config.secrets.authentication.username && credentials[1] === config.secrets.authentication.password) {
         next();
         return;
       }

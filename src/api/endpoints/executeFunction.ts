@@ -1,8 +1,8 @@
-import {Request, Response} from 'express';
 import database from '../../services/database';
 import execution from '../../services/execution';
 import LogManager from '../../services/logManager';
 import cacheTTL from 'map-cache-ttl';
+import { IncomingMessage, ServerResponse } from 'http';
 
 const idCache = new cacheTTL('8s', '30s');
 
@@ -11,8 +11,16 @@ const idCache = new cacheTTL('8s', '30s');
  * @param {Request} req the request
  * @param {Response} res the response
  */
-export default async function executeFunction(req: Request, res: Response) {
-  const functionID = req.params.id;
+export default async function executeFunction(req: IncomingMessage, res: ServerResponse) {
+  if (!req.url) return;
+  
+  const functionID = req.url.split('/')[1];
+
+  if (!functionID) {
+    res.statusCode = 403;
+    res.end('Invalid URL!');
+    return;
+  }
 
   let instance;
 
@@ -24,7 +32,8 @@ export default async function executeFunction(req: Request, res: Response) {
       logs.updateContext('api', ['execute', functionID]);
 
       logs.logError(`Failed to get instance of called function ${functionID}, ${error}`);
-      res.status(500).end();
+      res.statusCode = 200;
+      res.end();
       return;
     });
 
@@ -36,7 +45,8 @@ export default async function executeFunction(req: Request, res: Response) {
     logs.updateContext('api', ['execute', functionID]);
 
     logs.logError(`Failed to get instance of called function ${functionID}, instance not found`);
-    res.status(404).end();
+    res.statusCode = 404;
+    res.end();
     return;
   }
 
@@ -45,7 +55,8 @@ export default async function executeFunction(req: Request, res: Response) {
     logs.updateContext('api', ['execute', functionID]);
 
     logs.logError(`Failed to execute function ${functionID}, ${error}. STACK: ${error.stack}`);
-    res.status(500).end();
+    res.statusCode = 500;
+    res.end();
     return;
   });
 }

@@ -3,14 +3,14 @@ import { vol } from 'memfs';
 import { InstanceI } from "../interfaces/instances";
 import LogManager from '../services/logManager';
 import config from "./config";
-import { Request, Response } from "express";
 import { CachedNodeVMI } from "../interfaces/caching";
 import volumes from "./volumes";
 import database from "./database";
 import instancesLogging from "./instancesLogging";
 import packages from "./packages";
-import {join} from 'path';
+import {join, resolve} from 'path';
 import { waitUntil } from 'async-wait-until';
+import { IncomingMessage, ServerResponse } from 'http';
 
 
 /**
@@ -65,9 +65,9 @@ class ExecutionService {
         mock: {
           fs: volume
         },
-        root: (process.env.production == 'true') ?
+        /*root: resolve((process.env.production == 'true') ?
           config.json.execution.vms.sandboxDirectory.production :
-          config.json.execution.vms.sandboxDirectory.development,
+          config.json.execution.vms.sandboxDirectory.development),*/ // TODO: fix module resolution in vm2
         context: 'host',
         resolve: packages.packageResolverFactory(volumeID),
       },
@@ -200,7 +200,7 @@ class ExecutionService {
   /**
    * Executes the cloud function in the vm
    */
-  public async execute(instance: InstanceI, request: Request, response: Response): Promise<any> {
+  public async execute(instance: InstanceI, request: IncomingMessage, response: ServerResponse): Promise<any> {
     if (!instance._id) return;
 
     const cachedVM = this.inMemoryVMs.find(vm => {

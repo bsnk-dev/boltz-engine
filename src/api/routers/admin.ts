@@ -1,4 +1,4 @@
-import {Router} from 'express';
+import express, {Router} from 'express';
 
 import createInstance from '../endpoints/createInstance';
 import listInstances from '../endpoints/listInstances';
