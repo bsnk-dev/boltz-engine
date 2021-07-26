@@ -1,4 +1,4 @@
-import {NodeVM} from 'vm2';
+import {NodeVM} from 'bsnk-dev-vm2';
 import {vol} from 'memfs';
 import {InstanceI} from '../interfaces/instances';
 import LogManager from '../services/logManager';

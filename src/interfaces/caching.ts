@@ -1,5 +1,5 @@
 import {vol} from 'memfs';
-import {NodeVM} from 'vm2';
+import {NodeVM} from 'bsnk-dev-vm2';
 import {Volume} from './instances';
 
 export interface CachedItemI {
