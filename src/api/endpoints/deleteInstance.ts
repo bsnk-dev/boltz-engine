@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import {Request, Response} from 'express';
 import database from '../../services/database';
 import LogManager from '../../services/logManager';
 
@@ -11,9 +11,9 @@ export default async function deleteInstance(req: Request, res: Response) {
   const logs = new LogManager();
   logs.updateContext('api', ['deleteInstance']);
 
-  const { id } = req.body;
+  const {id} = req.body;
 
-  await database.deleteInstance(id).catch(error => {
+  await database.deleteInstance(id).catch((error) => {
     logs.logError(`Failed to delete instance ${id}, ${error}`);
     res.status(500).end();
     return;

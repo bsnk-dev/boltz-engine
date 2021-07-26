@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import {Request, Response} from 'express';
 import v8 from 'v8';
 import LogManager from '../../services/logManager';
 

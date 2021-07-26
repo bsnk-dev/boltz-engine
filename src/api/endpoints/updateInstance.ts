@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import {Request, Response} from 'express';
 import database from '../../services/database';
 import LogManager from '../../services/logManager';
 
@@ -11,7 +11,7 @@ export default async function updateInstance(req: Request, res: Response) {
   const logs = new LogManager();
   logs.updateContext('api', ['updateInstance']);
 
-  await database.updateInstance(req.body.id, req.body.instance).catch(err => {
+  await database.updateInstance(req.body.id, req.body.instance).catch((err) => {
     logs.logError(`Failed to update instance, ${err}`);
     res.status(500).end();
     return;

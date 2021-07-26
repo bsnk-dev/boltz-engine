@@ -2,7 +2,7 @@ import database from '../../services/database';
 import execution from '../../services/execution';
 import LogManager from '../../services/logManager';
 import cacheTTL from 'map-cache-ttl';
-import { IncomingMessage, ServerResponse } from 'http';
+import {IncomingMessage, ServerResponse} from 'http';
 
 const idCache = new cacheTTL('8s', '30s');
 
@@ -13,7 +13,7 @@ const idCache = new cacheTTL('8s', '30s');
  */
 export default async function executeFunction(req: IncomingMessage, res: ServerResponse) {
   if (!req.url) return;
-  
+
   const functionID = req.url.split('/')[1];
 
   if (!functionID) {
@@ -27,7 +27,7 @@ export default async function executeFunction(req: IncomingMessage, res: ServerR
   if (idCache.has(functionID)) {
     instance = idCache.get(functionID);
   } else {
-    instance = await database.getInstanceById(functionID).catch(error => {
+    instance = await database.getInstanceById(functionID).catch((error) => {
       const logs = new LogManager();
       logs.updateContext('api', ['execute', functionID]);
 

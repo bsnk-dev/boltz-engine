@@ -10,9 +10,15 @@ import executeFunction from '../api/endpoints/executeFunction';
  * for data transfer like volume data, etc. This means it will be running multiple vms on one thread.
  */
 
+/**
+ * Sets up the worker process to execute vms.
+ */
 class VMWorker {
   port = config.json.executePort;
 
+  /**
+   * Starts a server and listens for volue reloads requests
+   */
   constructor() {
     http.createServer((req, res) => {
       executeFunction(req, res);

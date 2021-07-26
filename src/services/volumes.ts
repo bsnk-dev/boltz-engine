@@ -1,10 +1,10 @@
-import { CachedVolumeI } from "../interfaces/caching";
-import { Volume } from "../interfaces/instances";
-import { Volume as Vol, vol } from 'memfs';
-import database from "./database";
-import LogManager from "./logManager";
-import config from "./config";
-import packages from "./packages";
+import {CachedVolumeI} from '../interfaces/caching';
+import {Volume} from '../interfaces/instances';
+import {Volume as Vol, vol} from 'memfs';
+import database from './database';
+import LogManager from './logManager';
+import config from './config';
+import packages from './packages';
 import cluster from 'cluster';
 
 /** Manages volumes and caching them in memory. */
@@ -16,7 +16,7 @@ class VolumesService {
   * Garbage collect unsed cached volumes and vms
   */
   private gc() {
-    this.inMemoryVolumes = this.inMemoryVolumes.filter(volume => {
+    this.inMemoryVolumes = this.inMemoryVolumes.filter((volume) => {
       if (volume.timeLastUsed < Date.now() - volume.ttl) {
         this.logs.log(`Removing volume ${volume.volume.id} from memory`);
         return false;
@@ -34,9 +34,10 @@ class VolumesService {
 
   /**
    * Gets a volume, and if it's cached returns that
+   * @param {string} volumeID - The ID of the volume to get
    */
   public async getVolume(volumeID: string): Promise<typeof vol> {
-    const cachedVolume = this.inMemoryVolumes.find(vol => {
+    const cachedVolume = this.inMemoryVolumes.find((vol) => {
       return vol.volume.id === volumeID;
     });
 
@@ -45,7 +46,7 @@ class VolumesService {
       return cachedVolume.api;
     }
 
-    const volumeData = await database.getVolumeById(volumeID).catch(err => {
+    const volumeData = await database.getVolumeById(volumeID).catch((err) => {
       throw this.logs.error(`Failed to retrieve volume, ${err}`);
     });
 
@@ -66,6 +67,10 @@ class VolumesService {
     return loadedVolume;
   }
 
+  /**
+   * Installs packages from the package.json in a volume
+   * @param {string} volumeID - The ID of the volume to install packages for
+   */
   public async installVolumePackages(volumeID: string): Promise<void> {
     if (cluster.isWorker) {
       console.error('cluster processes can\'t install packages');
@@ -75,33 +80,41 @@ class VolumesService {
     const loadedVolume = await this.getVolume(volumeID);
     const packageJSON = loadedVolume.readFileSync('/package.json');
 
-    await packages.installPackages(packageJSON.toString(), volumeID); 
+    await packages.installPackages(packageJSON.toString(), volumeID);
   }
 
   /**
    * Reloads a volume that was modified in the cache
-   * @param volumeID
-   * @returns {Promise<void>}
+   * @param {string} volumeID The id of the voluem to reload
+   * @return {Promise<void>}
    */
   public async reloadVolume(volumeID: string): Promise<void> {
     if (cluster.isPrimary && cluster.workers) {
       for (const workerID in cluster.workers) {
-        cluster.workers[workerID]?.send({type: 'reloadVolume', id: volumeID});
+        if (cluster.workers.hasOwnProperty(workerID)) {
+          const w = cluster.workers[workerID];
+          if (!w) continue;
+
+          w.send({
+            type: 'reloadVolume',
+            volumeID,
+          });
+        }
       }
 
       // Primary doesn't execute VM instances
       return;
     }
 
-    const vol = this.inMemoryVolumes.find(vol => {
+    const vol = this.inMemoryVolumes.find((vol) => {
       return vol.volume.id === volumeID;
     });
 
     if (!vol) return;
 
     this.logs.customContext(['reloadVolume']).log(`Reloading volume ${volumeID}`);
-    
-    const volumeData = await database.getVolumeById(volumeID).catch(err => {
+
+    const volumeData = await database.getVolumeById(volumeID).catch((err) => {
       throw this.logs.error(`Failed to retrieve volume, ${err}`);
     });
 

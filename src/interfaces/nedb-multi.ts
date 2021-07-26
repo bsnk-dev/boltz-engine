@@ -1,13 +1,13 @@
 // NEDB type definitions modified for NEDB-multi
+/* eslint-disable */
+// / <reference types="node" />
 
-/// <reference types="node" />
-
-import { EventEmitter } from 'events';
+import {EventEmitter} from 'events';
 
 export = NedbMulti;
 
 declare class NedbMulti<G = any> extends EventEmitter {
-    constructor(pathOrOptions?: string | Nedb.DataStoreOptions);
+  constructor(pathOrOptions?: string | Nedb.DataStoreOptions);
 
     persistence: Nedb.Persistence;
 

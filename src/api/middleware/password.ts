@@ -24,6 +24,6 @@ export default function password(req: Request, res: Response, next: Function) {
   // if no authorization header is present, send a 401 response that enables basic auth
   res.status(401).send({
     error: 'Unauthorized',
-    message: 'Please provide a valid username and password'
+    message: 'Please provide a valid username and password',
   }).end();
 }

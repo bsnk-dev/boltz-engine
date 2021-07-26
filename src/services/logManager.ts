@@ -3,7 +3,7 @@
 /**
  * Allows you to create many different errors in the same place.
  */
- export default class LogManager {
+export default class LogManager {
   private primaryContext = 'unspecified';
   private furtherContext: string[] = [];
 

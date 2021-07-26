@@ -13,12 +13,12 @@ export default async function createInstance(req: Request, res: Response) {
 
   const instanceID = await database.createInstance(req.body.name)
       .catch((e) => {
-        logs.logError(`Failed to create new instance, ${e}`)
+        logs.logError(`Failed to create new instance, ${e}`);
         res.status(500).end();
         return;
       });
-  
+
   res.status(201).json({
-    instanceID: instanceID
+    instanceID: instanceID,
   }).end();
 }

@@ -1,6 +1,5 @@
 import {Request, Response} from 'express';
 import database from '../../services/database';
-import execution from '../../services/execution';
 import LogManager from '../../services/logManager';
 import volumes from '../../services/volumes';
 
@@ -17,7 +16,7 @@ export default async function createOrUpdateVolume(req: Request, res: Response) 
 
   const volumeID = await database.createOrUpdateVolume(id, name, files)
       .catch((e) => {
-        logs.logError(`Failed to create/update volume, ${e}`)
+        logs.logError(`Failed to create/update volume, ${e}`);
         res.status(500).end();
         return;
       });
@@ -26,8 +25,8 @@ export default async function createOrUpdateVolume(req: Request, res: Response) 
     await volumes.installVolumePackages(id);
     await volumes.reloadVolume(id);
   }
-  
+
   res.status(201).json({
-    volumeID
+    volumeID,
   }).end();
 }

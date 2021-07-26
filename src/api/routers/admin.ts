@@ -1,4 +1,4 @@
-import express, {Router} from 'express';
+import {Router} from 'express';
 
 import createInstance from '../endpoints/createInstance';
 import listInstances from '../endpoints/listInstances';
@@ -22,7 +22,7 @@ adminRouter.use('/listInstances', listInstances);
 adminRouter.post('/createInstance', celebrate({
   [Segments.BODY]: {
     name: Joi.string().required(),
-  }
+  },
 }), createInstance);
 
 adminRouter.post('/createOrUpdateVolume', celebrate({

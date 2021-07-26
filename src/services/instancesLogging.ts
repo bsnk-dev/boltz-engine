@@ -13,19 +13,35 @@ interface LogI {
   timestamp: number;
 };
 
+/**
+ * Logs instances to central database to be viewed in the admin interface
+ */
 class InstancesLoggingService {
-  logger: Datastore = new DatastoreLinked({ filename: 
-    (process.env.production == 'true') ? 
-    config.json.database.path.production+'vm-logs.db' : 
-    config.json.database.path.development+'vm-logs.db' });
+  logger: Datastore = new DatastoreLinked({filename:
+    (process.env.production == 'true') ?
+    config.json.database.path.production+'vm-logs.db' :
+    config.json.database.path.development+'vm-logs.db'});
 
+  /**
+   * Makes a new log entry
+   * @param {string} severity - severity of the log
+   * @param {string} message - message to be logged
+   * @param {string} instanceID - instanceID of the VM
+   * @return {undefined}
+   */
   log(severity: Severity, message: string, instanceID: string) {
-    this.logger.insert({ severity, message, instanceID, timestamp: Date.now() });
+    this.logger.insert({severity, message, instanceID, timestamp: Date.now()});
   }
 
+  /**
+   * Gets all logs from the database for an instance
+   * @param {string} instanceID - instanceID of the VM
+   * @param {Severity} severity - severity of the log
+   * @return {Promise<LogI[]>} - array of logs
+   */
   async getLogs(instanceID: string, severity?: Severity) {
     return new Promise((resolve, reject) => {
-      const query: {instanceID: string; severity?: Severity} = { instanceID };
+      const query: {instanceID: string; severity?: Severity} = {instanceID};
       if (severity) query.severity = severity;
 
       this.logger.find(query, (err: Error, logs: LogI[]) => {

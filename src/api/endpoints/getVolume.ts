@@ -10,7 +10,7 @@ import LogManager from '../../services/logManager';
 export default async function getVolume(req: Request, res: Response) {
   const logs = new LogManager();
   logs.updateContext('api', ['getVolume']);
-  
+
   const {id} = req.query;
 
   const volume = await database.getVolumeById(id as string).catch((e) => {

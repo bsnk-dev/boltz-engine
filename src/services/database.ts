@@ -1,7 +1,7 @@
 // @ts-ignore NEDB-multi doesn't have types
-import DatastoreConnector from 'nedb-multi'
+import DatastoreConnector from 'nedb-multi';
 import Datastore from '../interfaces/nedb-multi';
-import { Instance, InstanceI, Volume, VolumeI } from '../interfaces/instances';
+import {Instance, InstanceI, Volume, VolumeI} from '../interfaces/instances';
 import config from './config';
 
 const DatastoreLinked = DatastoreConnector(config.json.dbPort);
@@ -76,9 +76,9 @@ class DatabaseService extends DatabasePlatform {
    * @return {InstanceI}
    * @throws {Error}
    */
-   async getInstanceById(id: string): Promise<InstanceI | null> {
+  async getInstanceById(id: string): Promise<InstanceI | null> {
     return new Promise((resolve, reject) => {
-      return this.instancesDB.findOne({ _id: id }, (err, instance) => {
+      return this.instancesDB.findOne({_id: id}, (err, instance) => {
         if (err) {
           reject(err);
         }
@@ -92,8 +92,8 @@ class DatabaseService extends DatabasePlatform {
    * @param {string} name The name of the instance
    * @return {string}
    */
-   async createInstance(name: string) {
-    const instance = new Instance({ name: name, volumeID: null });
+  async createInstance(name: string) {
+    const instance = new Instance({name: name, volumeID: null});
 
     return new Promise((resolve, reject) => {
       this.instancesDB.insert(instance, (err, newInstance) => {
@@ -110,7 +110,7 @@ class DatabaseService extends DatabasePlatform {
    * @param {string} id The id of the instance
    * @param {InstanceI} instance The new instance details
    */
-   async updateInstance(id: string, instance: InstanceI) {
+  async updateInstance(id: string, instance: InstanceI) {
     const updatedDetails: InstanceI = {
       name: instance.name,
       volumeID: instance.volumeID,
@@ -125,7 +125,7 @@ class DatabaseService extends DatabasePlatform {
     }
 
     return new Promise((resolve, reject) => {
-      this.instancesDB.update({ _id: id }, {$set: {...updatedInstance}}, {}, (err) => {
+      this.instancesDB.update({_id: id}, {$set: {...updatedInstance}}, {}, (err) => {
         if (err) {
           reject(err);
         }
@@ -141,7 +141,7 @@ class DatabaseService extends DatabasePlatform {
    */
   async deleteInstance(id: string) {
     return new Promise((resolve, reject) => {
-      this.instancesDB.remove({ _id: id }, (err) => {
+      this.instancesDB.remove({_id: id}, (err) => {
         if (err) {
           reject(err);
         }
@@ -187,7 +187,7 @@ class DatabaseService extends DatabasePlatform {
    */
   async getVolumeById(id: string): Promise<Volume> {
     return new Promise((resolve, reject) => {
-      this.volumesDB.findOne({ _id: id }, (err, volume) => {
+      this.volumesDB.findOne({_id: id}, (err, volume) => {
         if (err) {
           reject(err);
         }
@@ -216,7 +216,7 @@ class DatabaseService extends DatabasePlatform {
 
     return new Promise((resolve, reject) => {
       if (id) {
-        this.volumesDB.update({ _id: id }, { $set: {...cleanVolume}}, {}, (err) => {
+        this.volumesDB.update({_id: id}, {$set: {...cleanVolume}}, {}, (err) => {
           if (err) {
             reject(err);
           }
@@ -241,7 +241,7 @@ class DatabaseService extends DatabasePlatform {
    */
   async deleteVolume(id: string) {
     return new Promise((resolve, reject) => {
-      this.volumesDB.remove({ _id: id }, (err) => {
+      this.volumesDB.remove({_id: id}, (err) => {
         if (err) {
           reject(err);
         }

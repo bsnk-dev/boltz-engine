@@ -1,16 +1,16 @@
-import { NodeVM } from "vm2";
-import { vol } from 'memfs';
-import { InstanceI } from "../interfaces/instances";
+import {NodeVM} from 'vm2';
+import {vol} from 'memfs';
+import {InstanceI} from '../interfaces/instances';
 import LogManager from '../services/logManager';
-import config from "./config";
-import { CachedNodeVMI } from "../interfaces/caching";
-import volumes from "./volumes";
-import database from "./database";
-import instancesLogging from "./instancesLogging";
-import packages from "./packages";
-import {join, resolve} from 'path';
-import { waitUntil } from 'async-wait-until';
-import { IncomingMessage, ServerResponse } from 'http';
+import config from './config';
+import {CachedNodeVMI} from '../interfaces/caching';
+import volumes from './volumes';
+import database from './database';
+import instancesLogging from './instancesLogging';
+import packages from './packages';
+import {join} from 'path';
+import {waitUntil} from 'async-wait-until';
+import {IncomingMessage, ServerResponse} from 'http';
 
 
 /**
@@ -26,7 +26,7 @@ class ExecutionService {
    * Garbage collect unsed cached volumes and vms
    */
   private gc() {
-    this.inMemoryVMs = this.inMemoryVMs.filter(vm => {
+    this.inMemoryVMs = this.inMemoryVMs.filter((vm) => {
       if (vm.timeLastUsed < Date.now() - vm.ttl) {
         this.logs.log(`Removing VM ${vm.instanceID} from memory`);
         return false;
@@ -44,9 +44,13 @@ class ExecutionService {
 
   /**
    * Gets a vm, and if it's cached returns that
+   * @param {string} instanceID The id of the instance to start a vm of
+   * @param {_Volume} volume The actual volume that the vm will access
+   * @param {string} volumeID The id of the volume to start the vm with
+   * @return {Promise<NodeVM>}
    */
   private async getVM(instanceID: string, volume: typeof vol, volumeID: string): Promise<NodeVM> {
-    const cachedVM = this.inMemoryVMs.find(vm => {
+    const cachedVM = this.inMemoryVMs.find((vm) => {
       return vm.instanceID === instanceID;
     });
 
@@ -63,9 +67,9 @@ class ExecutionService {
         },
         builtin: ['*'],
         mock: {
-          fs: volume
+          fs: volume,
         },
-        /*root: resolve((process.env.production == 'true') ?
+        /* root: resolve((process.env.production == 'true') ?
           config.json.execution.vms.sandboxDirectory.production :
           config.json.execution.vms.sandboxDirectory.development),*/ // TODO: fix module resolution in vm2
         context: 'host',
@@ -86,8 +90,13 @@ class ExecutionService {
     return newVM;
   }
 
+  /**
+   * Helper to get vm exports (which is what the requests are called on) from a running vm
+   * @param {string} instanceID The id of the instance to start a vm of
+   * @return {Promise<any>}
+   */
   private async getVMExports(instanceID: string): Promise<any> {
-    const cachedVM = this.inMemoryVMs.find(vm => {
+    const cachedVM = this.inMemoryVMs.find((vm) => {
       return vm.instanceID === instanceID;
     });
 
@@ -99,6 +108,7 @@ class ExecutionService {
 
   /**
    * Initalize a cloud function
+   * @param {InstanceI} instance The instance data to initalize
    */
   public async initalize(instance: InstanceI): Promise<any> {
     this.isInitalizing.set(instance.instanceID, true);
@@ -151,7 +161,7 @@ class ExecutionService {
     const vmExports = vm.run(`${patchedRequire} ${indexJS}`, join(sandboxDirectory, instance.volumeID || ''));
 
     const cachedVM =
-      this.inMemoryVMs.find(vm => {
+      this.inMemoryVMs.find((vm) => {
         return vm.instanceID === instance._id;
       });
 
@@ -165,6 +175,11 @@ class ExecutionService {
     return vmExports;
   }
 
+  /**
+   * Listens to logs from a vm
+   * @param {NodeVM} vm The vm to listen to logs from
+   * @param {string} instanceID The id of the instance to mark logs with
+   */
   private listenToLogs(vm: NodeVM, instanceID: string) {
     vm.on('console.log', (data) => {
       instancesLogging.log('info', data, instanceID);
@@ -183,6 +198,10 @@ class ExecutionService {
     });
   }
 
+  /**
+   * Reinializes vms using a volume that has changed
+   * @param {string} volumeID The id of the volume used by vms that need to be reinitalized
+   */
   public async reinitalizeInstancesUsingVolume(volumeID: string): Promise<void> {
     for (const instance of this.inMemoryVMs) {
       if (instance.volumeID === volumeID) {
@@ -191,19 +210,23 @@ class ExecutionService {
           this.logs.log(`Instance in memory ${instance.instanceID} not found in database`);
           continue;
         }
-        
+
         this.initalize(instanceData);
-      } 
+      }
     }
   }
 
   /**
    * Executes the cloud function in the vm
+   * @param {InstanceI} instance The id of the instance to execute the function with
+   * @param {IncomingMessage} request The request to execute the function with
+   * @param {ServerResponse} response The response to execute the function with
+   * @return {Promise<void>}
    */
-  public async execute(instance: InstanceI, request: IncomingMessage, response: ServerResponse): Promise<any> {
+  public async execute(instance: InstanceI, request: IncomingMessage, response: ServerResponse): Promise<void> {
     if (!instance._id) return;
 
-    const cachedVM = this.inMemoryVMs.find(vm => {
+    const cachedVM = this.inMemoryVMs.find((vm) => {
       return vm.instanceID === instance._id;
     });
 
@@ -211,8 +234,8 @@ class ExecutionService {
 
     if (!cachedVM) {
       if (!this.isInitalizing.has(instance._id)) {
-        vmExports = await this.initalize(instance).catch(e => {
-          this.logs.log(`Error initalizing VM ${instance._id}`)
+        vmExports = await this.initalize(instance).catch((e) => {
+          this.logs.log(`Error initalizing VM ${instance._id}`);
           instancesLogging.log('error', `Failed to initalize instance, ${e} ${(e as Error).stack}`, instance._id || 'unknown_id');
         });
       } else {

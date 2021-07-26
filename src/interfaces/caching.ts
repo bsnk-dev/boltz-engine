@@ -1,6 +1,6 @@
-import { vol } from "memfs";
-import { NodeVM } from "vm2";
-import { Volume } from "./instances";
+import {vol} from 'memfs';
+import {NodeVM} from 'vm2';
+import {Volume} from './instances';
 
 export interface CachedItemI {
   timeLastUsed: number;
