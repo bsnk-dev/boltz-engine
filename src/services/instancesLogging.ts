@@ -23,6 +23,13 @@ class InstancesLoggingService {
     config.json.database.path.development+'vm-logs.db'});
 
   /**
+   * Loads the database from the server
+   */
+  constructor() {
+    this.logger.loadDatabase();
+  }
+
+  /**
    * Makes a new log entry
    * @param {string} severity - severity of the log
    * @param {string} message - message to be logged

@@ -36,8 +36,6 @@ Recommended use of the Boltz Engine is for simple microservices projects that ca
 
 The Boltz engine has a few problems, including:
 
-- Minor memory leak regarding cached packages loaded in the host and proxied to instances building up as more volumes are used.
-- Cross contamination of packages used in volumes between seperate vm instances in the same worker.
 - Large package install size because of the implementation of indivdual volume node_modules sandboxes.
 - The admin API uses basic auth, which means you have to restart the server to change the password.
 

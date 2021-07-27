@@ -69,10 +69,11 @@ class ExecutionService {
         mock: {
           fs: volume,
         },
-        /* root: resolve((process.env.production == 'true') ?
+        root: (process.env.production == 'true') ?
           config.json.execution.vms.sandboxDirectory.production :
-          config.json.execution.vms.sandboxDirectory.development),*/ // TODO: fix module resolution in vm2
+          config.json.execution.vms.sandboxDirectory.development,
         context: 'host',
+        allowCaching: false,
         resolve: packages.packageResolverFactory(volumeID),
       },
       console: 'redirect',
@@ -239,7 +240,7 @@ class ExecutionService {
           instancesLogging.log('error', `Failed to initalize instance, ${e} ${(e as Error).stack}`, instance._id || 'unknown_id');
         });
       } else {
-        await waitUntil(() => !this.isInitalizing.has(instance._id as string));
+        await waitUntil(() => !this.isInitalizing.has(instance._id as string), {timeout: 5000});
         vmExports = this.getVMExports(instance._id as string);
       }
     } else {
@@ -250,6 +251,13 @@ class ExecutionService {
       this.logs.log(`VM exports not found for instance ${instance._id}, reloading.`);
       await this.initalize(instance);
     }
+
+    // Removes the thing before it os the vm believes it's at the root
+    // of the endpoint
+    const url = request.url || '';
+    request.url = url.slice(
+        ('/' + instance._id).length,
+    );
 
     try {
       await vmExports.request(request, response);
