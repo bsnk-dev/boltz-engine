@@ -206,7 +206,7 @@ class ExecutionService {
   public async reinitalizeInstancesUsingVolume(volumeID: string): Promise<void> {
     for (const instance of this.inMemoryVMs) {
       if (instance.volumeID === volumeID) {
-        const instanceData = await database.getInstanceById(instance.instanceID);
+        const instanceData = await database.getInstanceByIdOrName(instance.instanceID);
         if (!instanceData) {
           this.logs.log(`Instance in memory ${instance.instanceID} not found in database`);
           continue;
@@ -255,9 +255,7 @@ class ExecutionService {
     // Removes the thing before it os the vm believes it's at the root
     // of the endpoint
     const url = request.url || '';
-    request.url = url.slice(
-        ('/' + instance._id).length,
-    );
+    request.url = '/' + url.split('/')[2]
 
     try {
       await vmExports.request(request, response);

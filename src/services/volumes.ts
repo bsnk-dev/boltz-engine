@@ -90,16 +90,14 @@ class VolumesService {
    */
   public async reloadVolume(volumeID: string): Promise<void> {
     if (cluster.isPrimary && cluster.workers) {
-      for (const workerID in cluster.workers) {
-        if (cluster.workers.hasOwnProperty(workerID)) {
-          const w = cluster.workers[workerID];
-          if (!w) continue;
+      for (const [workerID] of Object.entries(cluster.workers)) {
+        const w = cluster.workers[workerID];
+        if (!w) continue;
 
-          w.send({
-            type: 'reloadVolume',
-            volumeID,
-          });
-        }
+        w.send({
+          type: 'reloadVolume',
+          id: volumeID,
+        });
       }
 
       // Primary doesn't execute VM instances

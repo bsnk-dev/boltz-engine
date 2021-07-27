@@ -11,11 +11,19 @@ if (cluster.isPrimary) {
 
       const w = cluster.fork();
 
-      if (w && w.process && w.process.stdout) w.process.stdout.pipe(process.stdout);
-      if (w && w.process && w.process.stderr) w.process.stderr.pipe(process.stderr);
+      if (w && w.process && w.process.stdout) w.process.stdout.on('data', (data) => {
+        console.log(`(${w.process.pid}) ${data}`);
+      });
+      if (w && w.process && w.process.stderr) w.process.stderr.on('data', (data) => {
+        console.log(`(${w.process.pid}) ${data}`);
+      });
     });
 
-    if (w && w.process && w.process.stdout) w.process.stdout.pipe(process.stdout);
-    if (w && w.process && w.process.stderr) w.process.stderr.pipe(process.stderr);
+    if (w && w.process && w.process.stdout) w.process.stdout.on('data', (data) => {
+      console.log(`(${w.process.pid}) ${data}`);
+    });
+    if (w && w.process && w.process.stderr) w.process.stderr.on('data', (data) => {
+      console.log(`(${w.process.pid}) ${data}`);
+    });
   }
 }

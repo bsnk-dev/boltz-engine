@@ -76,9 +76,22 @@ class DatabaseService extends DatabasePlatform {
    * @return {InstanceI}
    * @throws {Error}
    */
-  async getInstanceById(id: string): Promise<InstanceI | null> {
+  async getInstanceByIdOrName(id?: string, name?: string): Promise<InstanceI | null> {
+    const query: {[key: string]: any; _id?: string; name?: string} = {
+      _id: id,
+      name: name,
+    };
+
+    // remove undefined values from query
+    const newQuery: {[key: string]: any; _id?: string; name?: string} = {};
+    for (const key in query) {
+      if (query[key] !== undefined) {
+        newQuery[key] = query[key];
+      }
+    }
+
     return new Promise((resolve, reject) => {
-      return this.instancesDB.findOne({_id: id}, (err, instance) => {
+      return this.instancesDB.findOne(newQuery, (err, instance) => {
         if (err) {
           reject(err);
         }

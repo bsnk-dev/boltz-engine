@@ -27,7 +27,7 @@ export default async function executeFunction(req: IncomingMessage, res: ServerR
   if (idCache.has(functionID)) {
     instance = idCache.get(functionID);
   } else {
-    instance = await database.getInstanceById(functionID).catch((error) => {
+    instance = await database.getInstanceByIdOrName(undefined, functionID).catch((error) => {
       const logs = new LogManager();
       logs.updateContext('api', ['execute', functionID]);
 
