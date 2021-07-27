@@ -71,27 +71,48 @@ class DatabaseService extends DatabasePlatform {
   }
 
   /**
+   * Returns an instance by it's id or name
+   * @param {string} idOrName
+   * @return {InstanceI}
+   * @throws {Error}
+   */
+  async getInstanceByIdOrName(idOrName: string): Promise<InstanceI | null> {
+    const idResult = await this.getInstanceById(idOrName);
+
+    if (idResult !== null) {
+      return idResult;
+    } else {
+      const nameResult = await this.getInstanceByName(idOrName);
+      return nameResult;
+    }
+  }
+
+  /**
    * Returns an instance by it's id
    * @param {string} id
    * @return {InstanceI}
    * @throws {Error}
    */
-  async getInstanceByIdOrName(id?: string, name?: string): Promise<InstanceI | null> {
-    const query: {[key: string]: any; _id?: string; name?: string} = {
-      _id: id,
-      name: name,
-    };
-
-    // remove undefined values from query
-    const newQuery: {[key: string]: any; _id?: string; name?: string} = {};
-    for (const key in query) {
-      if (query[key] !== undefined) {
-        newQuery[key] = query[key];
-      }
-    }
-
+   async getInstanceById(id: string): Promise<InstanceI | null> {
     return new Promise((resolve, reject) => {
-      return this.instancesDB.findOne(newQuery, (err, instance) => {
+      return this.instancesDB.findOne({ _id: id}, (err, instance) => {
+        if (err) {
+          reject(err);
+        }
+        resolve(instance);
+      });
+    });
+  }
+
+  /**
+   * Returns an instance by it's name
+   * @param {string} name
+   * @return {InstanceI}
+   * @throws {Error}
+   */
+   async getInstanceByName(name: string): Promise<InstanceI | null> {
+    return new Promise((resolve, reject) => {
+      return this.instancesDB.findOne({ name }, (err, instance) => {
         if (err) {
           reject(err);
         }

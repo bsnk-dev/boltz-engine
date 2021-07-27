@@ -17,6 +17,7 @@
     "@types/express": "^4.17.13",
     "@types/nedb": "^1.8.12",
     "@types/nedb-logger": "^1.8.3",
+    "@types/pidusage": "^2.0.1",
     "@types/string-hash": "^1.1.1",
     "@types/usage": "0.0.28",
     "@typescript-eslint/eslint-plugin": "^4.28.3",
@@ -31,12 +32,14 @@
     "celebrate": "^15.0.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "fast-folder-size": "^1.4.0",
     "map-cache-ttl": "^0.1.1",
     "memfs": "^3.2.2",
     "nedb": "^1.8.0",
     "nedb-logger": "^0.1.0",
     "nedb-multi": "^1.2.2",
     "node-run-cmd": "^1.0.1",
+    "pidusage": "^2.0.21",
     "string-hash": "^1.1.3"
   }
 }

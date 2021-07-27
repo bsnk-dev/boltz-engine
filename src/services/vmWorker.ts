@@ -1,9 +1,11 @@
 import config from './config';
 import http from 'http';
+import https from 'https';
 import cluster from 'cluster';
 import volumes from './volumes';
 import execution from './execution';
 import executeFunction from '../api/endpoints/executeFunction';
+import {readFileSync} from 'fs';
 
 /**
  * This file will be manage a single worker that runs any vms sent to it and communicates with the main process
@@ -20,9 +22,15 @@ class VMWorker {
    * Starts a server and listens for volue reloads requests
    */
   constructor() {
-    http.createServer((req, res) => {
-      executeFunction(req, res);
-    }).listen(this.port);
+    if (config.json.ssl.enabled) {
+      https.createServer({ 
+        key: readFileSync(config.json.ssl.keyPath[(process.env.production == 'true') ? 'production' : 'development']).toString(),
+        cert: readFileSync(config.json.ssl.certPath[(process.env.production == 'true') ? 'production' : 'development']).toString(),
+        passphrase: config.secrets.ssl.passphrase,
+      }, executeFunction).listen(this.port);
+    } else {
+      http.createServer(executeFunction).listen(this.port);
+    }
 
     console.log(`Listening for execution requests on port ${config.json.executePort} from worker ${process.pid}`);
 

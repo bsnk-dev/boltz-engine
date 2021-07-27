@@ -6,6 +6,7 @@ export interface Config {
   executePort: number;
   dbPort: number;
   maxWorkerProcesses: number;
+  ssl: SSL,
 }
 export interface SecretsOrDatabase {
   path: PathOrSandboxDirectory;
@@ -25,4 +26,9 @@ export interface Ttl {
 }
 export interface Vms {
   sandboxDirectory: PathOrSandboxDirectory;
+}
+export interface SSL {
+  enabled: boolean;
+  keyPath: PathOrSandboxDirectory;
+  certPath: PathOrSandboxDirectory;
 }

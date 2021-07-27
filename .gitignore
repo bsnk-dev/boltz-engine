@@ -7,6 +7,8 @@ build
 # secrets and configs
 config.json
 secrets.json
+*.key
+*.pem
 
 # database
 database/
