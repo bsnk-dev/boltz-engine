@@ -9,21 +9,7 @@ if (cluster.isPrimary) {
     w.on('death', (worker) => {
       console.error(`Worker ${worker.process.pid} died`);
 
-      const w = cluster.fork();
-
-      if (w && w.process && w.process.stdout) w.process.stdout.on('data', (data) => {
-        console.log(`(${w.process.pid}) ${data}`);
-      });
-      if (w && w.process && w.process.stderr) w.process.stderr.on('data', (data) => {
-        console.log(`(${w.process.pid}) ${data}`);
-      });
-    });
-
-    if (w && w.process && w.process.stdout) w.process.stdout.on('data', (data) => {
-      console.log(`(${w.process.pid}) ${data}`);
-    });
-    if (w && w.process && w.process.stderr) w.process.stderr.on('data', (data) => {
-      console.log(`(${w.process.pid}) ${data}`);
+      cluster.fork();
     });
   }
 }

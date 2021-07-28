@@ -22,6 +22,8 @@ class VMWorker {
    * Starts a server and listens for volue reloads requests
    */
   constructor() {
+    this.patchConsoleLog();
+
     if (config.json.ssl.enabled) {
       https.createServer({ 
         key: readFileSync(config.json.ssl.keyPath[(process.env.production == 'true') ? 'production' : 'development']).toString(),
@@ -32,7 +34,7 @@ class VMWorker {
       http.createServer(executeFunction).listen(this.port);
     }
 
-    console.log(`Listening for execution requests on port ${config.json.executePort} from worker ${process.pid}`);
+    console.log(`Listening for execution requests on port ${config.json.executePort}`);
 
     if (cluster.isWorker) {
       process.on('message', async (msg: any) => {
@@ -42,6 +44,19 @@ class VMWorker {
         }
       });
     }
+  }
+
+  private patchConsoleLog() {
+    const oldConsoleLog = Object.assign(console.log);
+    const oldConsoleError = Object.assign(console.error);
+
+    console.log = (...args: any[]) => {
+      oldConsoleLog(`(${process.pid})`, ...args);
+    };
+
+    console.error = (...args: any[]) => {
+      oldConsoleError(`(${process.pid})`, ...args);
+    };
   }
 }
 
