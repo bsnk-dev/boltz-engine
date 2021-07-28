@@ -1,0 +1,1 @@
+node ./build/src/index.js

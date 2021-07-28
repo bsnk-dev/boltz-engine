@@ -5,8 +5,8 @@ node_modules/
 build
 
 # secrets and configs
-config.json
-secrets.json
+/config.json
+/secrets.json
 *.key
 *.pem
 
