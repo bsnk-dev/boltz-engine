@@ -50,7 +50,11 @@ Using the same function with 1 worker we can achieve ``1000`` simultaneous conne
 
 ## Contributing
 
-Boltz is accepting pull requests to improve the engine or the web interface, located in the web repo [here](https://github.com/bsnk-dev/boltz-web). It uses typescript with a lax eslint ruleset, so try to remain consistent, and keep it performant.
+Boltz is accepting pull requests to improve the engine or the web interface, located in the web repo [here](https://github.com/bsnk-dev/boltz-web). It uses typescript with the Google eslint ruleset, so try to remain consistent, and keep it performant.
+
+## Distribution
+
+When you are ready to distribute your changes, you need to make sure to have the web files under the `public` directory, otherwise, just run the web interface in development mode alongside the engine.
 
 ## License
 
