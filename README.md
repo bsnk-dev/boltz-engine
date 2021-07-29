@@ -10,7 +10,7 @@
   <p align="center">
     A fast Node.js microservices engine for running cloud functions with low latency.
     <br />
-    <a href=""><strong>Explore the docs »</strong></a>
+    <a href="https://boltz.bsnk.dev"><strong>Explore the docs »</strong></a>
     <br />
     <a href="https://github.com/bsnk-dev/boltz-engine/issues">Report Bug</a>
     ·
