@@ -4,6 +4,9 @@ node_modules/
 # built
 build
 
+# distribution
+boltz-engine
+
 # secrets and configs
 /config.json
 /secrets.json

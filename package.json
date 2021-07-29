@@ -8,6 +8,7 @@
     "dev": "nodemon ./build/src/index.js",
     "build": "tsc",
     "build:dev": "tsc -w",
+    "pack": "npm run build && shx mkdir -p boltz-engine && shx cp -r ./build ./boltz-engine/build && shx cp -r ./dist/* ./boltz-engine && shx cp ./package.json ./boltz-engine && shx cp -r ./public/ ./boltz-engine/public",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "bsnk-dev",
@@ -24,7 +25,8 @@
     "@typescript-eslint/parser": "^4.28.3",
     "eslint": "^7.31.0",
     "eslint-config-google": "^0.14.0",
-    "nodemon": "^2.0.12"
+    "nodemon": "^2.0.12",
+    "shx": "^0.3.3"
   },
   "dependencies": {
     "async-wait-until": "^2.0.7",
