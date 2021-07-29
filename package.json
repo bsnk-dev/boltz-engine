@@ -42,6 +42,7 @@
     "nedb-multi": "^1.2.2",
     "node-run-cmd": "^1.0.1",
     "pidusage": "^2.0.21",
-    "string-hash": "^1.1.3"
+    "string-hash": "^1.1.3",
+    "typescript": "^4.3.5"
   }
 }

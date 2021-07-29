@@ -60,6 +60,24 @@ class InstancesLoggingService {
       });
     });
   }
+
+  /**
+   * Deletes all logs from the database for an instance
+   * @param {string} instanceID - instanceID of the VM
+   * @return {Promise<void>} - void
+   * @throws {Error} - if instanceID is not provided
+   */
+  async deleteLogs(instanceID: string) {
+    return new Promise((resolve, reject) => {
+      this.logger.remove({instanceID}, {multi: true}, (err) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(undefined);
+        }
+      });
+    });
+  }
 }
 
 export default new InstancesLoggingService();
