@@ -1,0 +1,45 @@
+{
+  "secrets": {
+    "path": {
+      "production": "",
+      "development": "./secrets.json"
+    }
+  },
+  "database": {
+    "path": {
+      "production": "",
+      "development": "./database/"
+    }
+  },
+  "execution": {
+    "ttl": {
+      "volumes": 108000000,
+      "vms": 108000000
+    },
+    "vms": {
+      "sandboxDirectory": {
+        "production": "",
+        "development": "./sandbox/"
+      }
+    },
+    "gcInterval": 600000
+  },
+  
+  "dbPort": 8001,
+  "adminPort": 5000,
+  "executePort": 8000,
+
+  "maxWorkerProcesses": 16,
+
+  "ssl": {
+    "enabled": false,
+    "keyPath": {
+      "production": "",
+      "development": ""
+    },
+    "certPath": {
+      "production": "",
+      "development": ""
+    }
+  }
+}

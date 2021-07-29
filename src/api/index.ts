@@ -5,6 +5,9 @@ import config from '../services/config';
 import {errors} from 'celebrate';
 import cluster from 'cluster';
 import {join} from 'path';
+import https from 'https';
+import http from 'http';
+import {readFileSync} from 'fs';
 
 if (cluster.isPrimary) {
   const adminApp = express();
@@ -20,7 +23,16 @@ if (cluster.isPrimary) {
   });
 
   adminApp.use(errors());
+  
+  if (config.json.ssl.enabled) {
+    https.createServer({ 
+      key: readFileSync(config.json.ssl.keyPath[(process.env.production == 'true') ? 'production' : 'development']).toString(),
+      cert: readFileSync(config.json.ssl.certPath[(process.env.production == 'true') ? 'production' : 'development']).toString(),
+      passphrase: config.secrets.ssl.passphrase,
+    }, adminApp).listen(config.json.adminPort);
+  } else {
+    http.createServer(adminApp).listen(config.json.adminPort);
+  }
 
-  adminApp.listen(config.json.adminPort);
   console.log(`Listening for admin actions on port ${config.json.adminPort}`);
 }
