@@ -8,7 +8,7 @@
   <h3 align="center">Boltz Engine</h3>
 
   <p align="center">
-    A fast Node.js microservices engine for running cloud functions with low latency.
+    A fast Node.js microservices engine for running cloud functions with low latency. Admin dashboard included.
     <br />
     <a href="https://boltz.bsnk.dev"><strong>Explore the docs »</strong></a>
     <br />
