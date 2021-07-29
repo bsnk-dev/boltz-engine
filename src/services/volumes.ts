@@ -77,6 +77,7 @@ class VolumesService {
       return;
     }
 
+    await this.reloadVolume(volumeID, false);
     const loadedVolume = await this.getVolume(volumeID);
     const packageJSON = loadedVolume.readFileSync('/package.json');
 
@@ -86,10 +87,11 @@ class VolumesService {
   /**
    * Reloads a volume that was modified in the cache
    * @param {string} volumeID The id of the voluem to reload
+   * @param {boolean?} broadcast - Whether to broadcast the reload to all workers
    * @return {Promise<void>}
    */
-  public async reloadVolume(volumeID: string): Promise<void> {
-    if (cluster.isPrimary && cluster.workers) {
+  public async reloadVolume(volumeID: string, broadcast?: boolean): Promise<void> {
+    if (cluster.isPrimary && cluster.workers && broadcast !== false) {
       for (const [workerID] of Object.entries(cluster.workers)) {
         const w = cluster.workers[workerID];
         if (!w) continue;
