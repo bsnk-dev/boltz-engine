@@ -13,8 +13,8 @@
   },
   "execution": {
     "ttl": {
-      "volumes": 108000000,
-      "vms": 108000000
+      "volumes": 1800000,
+      "vms": 1800000
     },
     "vms": {
       "sandboxDirectory": {
