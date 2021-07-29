@@ -19,7 +19,7 @@
 </p>
 
 ### What it is
-The Boltz Engine is a fast and clustered Node.js microservices engine, starting instances from a cold start in 100ms, and subsequent interactions with functions fall under 10ms under normal conditions. V8 VM instances are used to seperate contexts and allow you to architect your code as self-hosted microservices interoperable with cloud based services. Multithreading means your instances are scaled across the the entire cluster over all your CPU cores.
+The Boltz Engine is a fast and clustered Node.js microservices engine, starting instances from a cold start in 100ms, and subsequent interactions with functions fall under 10ms under normal conditions. V8 VM instances are used to seperate contexts and allow you to architect your code as self-hosted microservices interoperable with cloud based services. Multithreading means your instances are scaled across the the entire cluster over all your CPU cores. An admin api allows you to manage Boltz from the included admin interface.
 
 ### VMs and Volumes
 Boltz let's you create VM instances to recieve and process web requests, and volumes to store code, configurations, and let you save data to a virtual disk temporarily. **All changes are cleared when the instance or volume needs to be reloaded.**
@@ -30,7 +30,7 @@ with any instances using the same volume on the same process.
 
 ### Why should you use it?
 
-Recommended use of the Boltz Engine is for simple microservices projects that can later be scaled with a proper cloud product. It has a low overhead and learning curve, allowing you to focus on functionality of your project and not setting it up to run on a cloud platform when it is light enough to handle locally. It's also super fast, giving results on your local machine in under 10ms, instead of thounsands of milliseconds on normal cloud functions.
+Recommended use of the Boltz Engine is for simple microservices projects that can later be scaled with a proper cloud product. It has a low overhead and learning curve, allowing you to focus on functionality of your project and not setting it up to run on a cloud platform when it is light enough to handle locally. It's also super fast, giving results on your local machine in under 10ms, instead of thounsands of milliseconds on normal cloud functions. Plus it's easy to use with the included admin interface.
 
 ## Problems
 
