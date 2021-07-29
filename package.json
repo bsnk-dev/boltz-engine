@@ -8,7 +8,7 @@
     "dev": "nodemon ./build/src/index.js",
     "build": "tsc",
     "build:dev": "tsc -w",
-    "pack": "npm run build && shx mkdir -p boltz-engine && shx cp -r ./build ./boltz-engine/build && shx cp -r ./dist/* ./boltz-engine && shx cp ./package.json ./boltz-engine && shx cp -r ./public/ ./boltz-engine/public",
+    "pack": "npm run build && shx mkdir -p boltz-engine && shx cp -r ./build ./boltz-engine/build && shx cp -r ./dist/* ./boltz-engine && shx cp ./package.json ./boltz-engine && shx cp -r ./public/ ./boltz-engine/public && shx cp ./README.md ./boltz-engine/README.md",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "bsnk-dev",
