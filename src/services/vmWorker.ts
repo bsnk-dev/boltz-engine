@@ -25,7 +25,7 @@ class VMWorker {
     this.patchConsoleLog();
 
     if (config.json.ssl.enabled) {
-      https.createServer({ 
+      https.createServer({
         key: readFileSync(config.json.ssl.keyPath[(process.env.production == 'true') ? 'production' : 'development']).toString(),
         cert: readFileSync(config.json.ssl.certPath[(process.env.production == 'true') ? 'production' : 'development']).toString(),
         passphrase: config.secrets.ssl.passphrase,
@@ -46,6 +46,9 @@ class VMWorker {
     }
   }
 
+  /**
+   * Patches the processes console.log to send message with their pid
+   */
   private patchConsoleLog() {
     const oldConsoleLog = Object.assign(console.log);
     const oldConsoleError = Object.assign(console.error);

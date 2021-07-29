@@ -255,7 +255,7 @@ class ExecutionService {
     // Removes the thing before it os the vm believes it's at the root
     // of the endpoint
     const url = request.url || '';
-    request.url = '/' + url.split('/')[2]
+    request.url = '/' + url.split('/')[2];
 
     try {
       await vmExports.request(request, response);

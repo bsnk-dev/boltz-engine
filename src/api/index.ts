@@ -23,9 +23,9 @@ if (cluster.isPrimary) {
   });
 
   adminApp.use(errors());
-  
+
   if (config.json.ssl.enabled) {
-    https.createServer({ 
+    https.createServer({
       key: readFileSync(config.json.ssl.keyPath[(process.env.production == 'true') ? 'production' : 'development']).toString(),
       cert: readFileSync(config.json.ssl.certPath[(process.env.production == 'true') ? 'production' : 'development']).toString(),
       passphrase: config.secrets.ssl.passphrase,

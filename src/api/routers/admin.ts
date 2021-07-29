@@ -13,6 +13,7 @@ import {celebrate, Joi, Segments} from 'celebrate';
 import listVolumes from '../endpoints/listVolumes';
 import deleteVolume from '../endpoints/deleteVolume';
 import getServerLoad from '../endpoints/getServerLoad';
+import deleteLogs from '../endpoints/deleteLogs';
 
 const adminRouter = Router();
 adminRouter.use(password);
@@ -62,6 +63,11 @@ adminRouter.get('/getLogs', celebrate({
   [Segments.QUERY]: {
     id: Joi.string().required(),
   }}), getLogs);
+
+adminRouter.get('/deleteLogs', celebrate({
+  [Segments.QUERY]: {
+    id: Joi.string().required(),
+  }}), deleteLogs);
 
 adminRouter.get('/getServerLoad', getServerLoad);
 

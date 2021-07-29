@@ -33,9 +33,11 @@ export default async function getServerLoad(req: Request, res: Response) {
 
   const totalCores = os.cpus().length;
   const totalMemory = os.totalmem();
-  const vmPackagesSize = await new Promise(resolve => {
+  const vmPackagesSize = await new Promise((resolve) => {
     fastFolderSize('./sandbox', (err, size) => {
-      if (size) { resolve(size); return }
+      if (size) {
+        resolve(size); return;
+      }
       resolve(0);
     });
   });

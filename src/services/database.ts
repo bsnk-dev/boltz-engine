@@ -93,9 +93,9 @@ class DatabaseService extends DatabasePlatform {
    * @return {InstanceI}
    * @throws {Error}
    */
-   async getInstanceById(id: string): Promise<InstanceI | null> {
+  async getInstanceById(id: string): Promise<InstanceI | null> {
     return new Promise((resolve, reject) => {
-      return this.instancesDB.findOne({ _id: id}, (err, instance) => {
+      return this.instancesDB.findOne({_id: id}, (err, instance) => {
         if (err) {
           reject(err);
         }
@@ -110,9 +110,9 @@ class DatabaseService extends DatabasePlatform {
    * @return {InstanceI}
    * @throws {Error}
    */
-   async getInstanceByName(name: string): Promise<InstanceI | null> {
+  async getInstanceByName(name: string): Promise<InstanceI | null> {
     return new Promise((resolve, reject) => {
-      return this.instancesDB.findOne({ name }, (err, instance) => {
+      return this.instancesDB.findOne({name}, (err, instance) => {
         if (err) {
           reject(err);
         }
