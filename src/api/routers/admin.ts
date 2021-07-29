@@ -14,6 +14,7 @@ import listVolumes from '../endpoints/listVolumes';
 import deleteVolume from '../endpoints/deleteVolume';
 import getServerLoad from '../endpoints/getServerLoad';
 import deleteLogs from '../endpoints/deleteLogs';
+import getExecutionPort from '../endpoints/getPortConfigs';
 
 const adminRouter = Router();
 adminRouter.use(password);
@@ -70,5 +71,6 @@ adminRouter.get('/deleteLogs', celebrate({
   }}), deleteLogs);
 
 adminRouter.get('/getServerLoad', getServerLoad);
+adminRouter.get('/getExecutionPort', getExecutionPort);
 
 export default adminRouter;
