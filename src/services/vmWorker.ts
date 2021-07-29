@@ -6,7 +6,6 @@ import volumes from './volumes';
 import execution from './execution';
 import executeFunction from '../api/endpoints/executeFunction';
 import {readFileSync} from 'fs';
-
 /**
  * This file will be manage a single worker that runs any vms sent to it and communicates with the main process
  * for data transfer like volume data, etc. This means it will be running multiple vms on one thread.
@@ -41,6 +40,8 @@ class VMWorker {
         if (msg.type === 'reloadVolume') {
           await volumes.reloadVolume(msg.id);
           await execution.reinitalizeInstancesUsingVolume(msg.id);
+        } else if (msg.type === 'reloadVM') {
+          await execution.reinitalizeInstancesWithID(msg.id);
         }
       });
     }

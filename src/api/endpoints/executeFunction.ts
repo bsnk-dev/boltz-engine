@@ -7,6 +7,21 @@ import {IncomingMessage, ServerResponse} from 'http';
 const idCache = new cacheTTL('8s', '30s');
 
 /**
+ * Gets the function ID of the refferer URL.
+ * @param {IncomingMessage} req - The request object.
+ * @param {ServerResponse} res - The response object.
+ * @return {null | string} - The function ID or null if not in the referer.
+ */
+function getRefferalFunctionID(req: IncomingMessage, res: ServerResponse): null | string {
+  if (!req.headers.referer) return null;
+
+  const functionID = req.headers.referer.split('/')[3];
+  if (functionID === '' || !functionID) return null;
+
+  return functionID;
+}
+
+/**
  * Lets a function respond to the request
  * @param {Request} req the request
  * @param {Response} res the response
@@ -14,7 +29,14 @@ const idCache = new cacheTTL('8s', '30s');
 export default async function executeFunction(req: IncomingMessage, res: ServerResponse) {
   if (!req.url) return;
 
-  const functionID = req.url.split('/')[1];
+  let functionID = req.url.split('/')[1];
+
+  const referrerFuncID = getRefferalFunctionID(req, res);
+
+  if ((functionID !== referrerFuncID) && referrerFuncID) {
+    req.url = '/' + referrerFuncID + req.url;
+    functionID = referrerFuncID;
+  }
 
   if (!functionID) {
     res.statusCode = 403;

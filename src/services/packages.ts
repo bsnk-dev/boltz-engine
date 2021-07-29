@@ -25,7 +25,7 @@ class PackagesService {
     writeFileSync(join(this.sandboxDirectory, 'vm-packages', volumeID, 'package.json'), packageJSON);
 
     await new Promise((resolve, reject) => {
-      exec(`cd ${join(this.sandboxDirectory, 'vm-packages', volumeID)} && npm i --prod && npm prune`).on('close', resolve).on('error', reject);
+      exec(`cd ${join(this.sandboxDirectory, 'vm-packages', volumeID)} && npm i --only=prod && npm prune`).on('close', resolve).on('error', reject);
     });
   }
 

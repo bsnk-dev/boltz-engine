@@ -11,6 +11,7 @@ import packages from './packages';
 import {join} from 'path';
 import {waitUntil} from 'async-wait-until';
 import {IncomingMessage, ServerResponse} from 'http';
+import cluster from 'cluster';
 
 
 /**
@@ -66,14 +67,15 @@ class ExecutionService {
           transitive: true,
         },
         builtin: ['*'],
+        allowModifyingBuiltin: true,
         mock: {
           fs: volume,
         },
         root: (process.env.production == 'true') ?
           config.json.execution.vms.sandboxDirectory.production :
           config.json.execution.vms.sandboxDirectory.development,
-        context: 'host',
-        allowCaching: false,
+        context: 'sandbox',
+        allowCaching: true,
         resolve: packages.packageResolverFactory(volumeID),
       },
       console: 'redirect',
@@ -128,6 +130,9 @@ class ExecutionService {
         const oldRequire = Object.assign(require);
 
         patchedRequire.cache = Object.create(null);
+
+        process.stdout = {};
+        process.stderr = {};
 
         function patchedRequire(name) {
             if (name == 'fs') return _filesystemVolume;
@@ -218,6 +223,39 @@ class ExecutionService {
   }
 
   /**
+   * Reinitializes vms with a particular id
+   * @param {string} instanceID The id of the instance to reinitalize
+   */
+  public async reinitalizeInstancesWithID(instanceID: string) {
+    /**
+     * Tell all nodes to perform this function
+     */
+    if (cluster.isPrimary && cluster.workers) {
+      for (const [workerID] of Object.entries(cluster.workers)) {
+        const w = cluster.workers[workerID];
+        if (!w) continue;
+
+        w.send({
+          type: 'reloadVM',
+          id: instanceID,
+        });
+      }
+
+      // Primary doesn't execute VM instances
+      return;
+    }
+
+    for (const instance of this.inMemoryVMs) {
+      if (instance.instanceID === instanceID) {
+        const instanceData = await database.getInstanceByIdOrName(instanceID);
+
+        if (!instanceData || !instanceData._id) return;
+        await this.initalize(instanceData);
+      }
+    }
+  }
+
+  /**
    * Executes the cloud function in the vm
    * @param {InstanceI} instance The id of the instance to execute the function with
    * @param {IncomingMessage} request The request to execute the function with
@@ -255,7 +293,7 @@ class ExecutionService {
     // Removes the thing before it os the vm believes it's at the root
     // of the endpoint
     const url = request.url || '';
-    request.url = '/' + url.split('/')[2];
+    request.url = '/' + url.split('/').slice(2).join('/');
 
     try {
       await vmExports.request(request, response);
