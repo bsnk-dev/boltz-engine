@@ -67,15 +67,15 @@ class ExecutionService {
           transitive: true,
         },
         builtin: ['*'],
-        allowModifyingBuiltin: true,
+        allowModifyingBuiltin: false,
         mock: {
           fs: volume,
         },
         root: (process.env.production == 'true') ?
           config.json.execution.vms.sandboxDirectory.production :
           config.json.execution.vms.sandboxDirectory.development,
-        context: 'sandbox',
-        allowCaching: true,
+        context: 'host',
+        allowCaching: false,
         resolve: packages.packageResolverFactory(volumeID),
       },
       console: 'redirect',
