@@ -74,8 +74,8 @@ class ExecutionService {
         root: (process.env.production == 'true') ?
           config.json.execution.vms.sandboxDirectory.production :
           config.json.execution.vms.sandboxDirectory.development,
-        context: 'sandbox',
-        allowCaching: true,
+        context: 'host',
+        allowCaching: false,
         resolve: packages.packageResolverFactory(volumeID),
       },
       console: 'redirect',
@@ -296,7 +296,7 @@ class ExecutionService {
     request.url = '/' + url.split('/').slice(2).join('/');
 
     try {
-      await vmExports.request(request, response);
+      vmExports.request(request, response);
     } catch (e) {
       instancesLogging.log('error', `${e}`, instance._id || 'unknown_id');
       throw e;

@@ -35,6 +35,7 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "fast-folder-size": "^1.4.0",
+    "jsEvents": "npm:events@^3.2.0",
     "map-cache-ttl": "^0.1.1",
     "memfs": "^3.2.2",
     "nedb": "^1.8.0",
