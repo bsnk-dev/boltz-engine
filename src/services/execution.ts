@@ -67,7 +67,7 @@ class ExecutionService {
           transitive: true,
         },
         builtin: ['*'],
-        allowModifyingBuiltin: false,
+        allowModifyingBuiltin: true,
         mock: {
           fs: volume,
         },
@@ -296,7 +296,7 @@ class ExecutionService {
     request.url = '/' + url.split('/').slice(2).join('/');
 
     try {
-      await vmExports.request(request, response);
+      vmExports.request(request, response);
     } catch (e) {
       instancesLogging.log('error', `${e}`, instance._id || 'unknown_id');
       throw e;
