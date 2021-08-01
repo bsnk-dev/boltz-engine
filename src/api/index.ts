@@ -34,5 +34,5 @@ if (cluster.isPrimary) {
     http.createServer(adminApp).listen(config.json.adminPort);
   }
 
-  console.log(`Listening for admin actions on port ${config.json.adminPort}`);
+  console.log(`Listening for admin actions on port ${config.json.adminPort}, ${config.json.ssl.enabled ? 'https' : 'http' + '://localhost:' + config.json.adminPort}`);
 }
