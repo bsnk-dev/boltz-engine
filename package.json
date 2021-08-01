@@ -30,7 +30,7 @@
   },
   "dependencies": {
     "async-wait-until": "^2.0.7",
-    "bsnk-dev-vm2": "^1.1.1",
+    "bsnk-dev-vm2": "^1.2.0",
     "celebrate": "^15.0.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
