@@ -191,6 +191,23 @@ class ExecutionService {
           const fsRequireId = idCounter;
           const moduleCache = new Map();
           function makeRequireFunction(parentModule) {
+              const resolve = (modulePath) => {
+                let filename = path_1.resolve(path_1.dirname(parentModule.filename), modulePath);
+                let pathExtension = (_b = filename.match(hasExtensionPattern)) === null || _b === void 0 ? void 0 : _b[0];
+                if (!pathExtension) {
+                    const resolvedPath = isDirectory(mfs, filename)
+                        ? resolveImplicitExtension(mfs, path_1.join(filename, 'index'))
+                        : resolveImplicitExtension(mfs, filename);
+                    if (!resolvedPath) {
+                        throw new Error(\`Cannot find module '\${modulePath}'\`);
+                    }
+                    filename = resolvedPath.filePath;
+                    pathExtension = resolvedPath.extension;
+                }
+                
+                return filename;
+              }
+
               const require = (modulePath) => {
                   var _a, _b;
                   if (!isFilePathPattern.test(modulePath)) {
@@ -203,18 +220,9 @@ class ExecutionService {
                       }
                       return realRequire(modulePath);
                   }
-                  let filename = path_1.resolve(path_1.dirname(parentModule.filename), modulePath);
-                  let pathExtension = (_b = filename.match(hasExtensionPattern)) === null || _b === void 0 ? void 0 : _b[0];
-                  if (!pathExtension) {
-                      const resolvedPath = isDirectory(mfs, filename)
-                          ? resolveImplicitExtension(mfs, path_1.join(filename, 'index'))
-                          : resolveImplicitExtension(mfs, filename);
-                      if (!resolvedPath) {
-                          throw new Error(\`Cannot find module '\${modulePath}'\`);
-                      }
-                      filename = resolvedPath.filePath;
-                      pathExtension = resolvedPath.extension;
-                  }
+                  
+                  const filename = resolve(modulePath);
+
                   if (moduleCache.has(filename)) {
                       return moduleCache.get(filename).exports;
                   }
@@ -227,6 +235,7 @@ class ExecutionService {
                   return newModule.exports;
               };
               require.id = fsRequireId;
+              require.resolve = resolve;
               return require;
           }
     
