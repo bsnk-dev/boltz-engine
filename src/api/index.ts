@@ -11,7 +11,7 @@ import {readFileSync} from 'fs';
 
 if (cluster.isPrimary) {
   const adminApp = express();
-  adminApp.use(express.json());
+  adminApp.use(express.json({limit: '50MB'}));
   adminApp.use(cors());
 
   adminApp.use('/admin', adminRouter);
