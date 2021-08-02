@@ -128,7 +128,7 @@ class ExecutionService {
     (() => {
       const realRequire = Object.assign(require);
     
-      const isFilePathPattern = /^[./]/;
+      const isFilePathPattern = /^[./]+/;
       const hasExtensionPattern = /\\.\\w+$/;
     
       const isDirectory = (
@@ -220,9 +220,10 @@ class ExecutionService {
                   }
                   const newModule = new module_1(filename, parentModule);
                   newModule.filename = filename;
+                  moduleCache.set(filename, newModule);
                   const sourceCode = mfs.readFileSync(filename).toString();
                   loaders[pathExtension](newModule, sourceCode, makeRequireFunction, filename, fsRequireId);
-                  moduleCache.set(filename, newModule);
+                  console.log(newModule.exports);
                   return newModule.exports;
               };
               require.id = fsRequireId;
