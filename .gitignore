@@ -18,6 +18,7 @@ database/
 
 # ide
 .vscode/
+.VSCodeCounter/
 
 # sandbox packages
 sandbox
