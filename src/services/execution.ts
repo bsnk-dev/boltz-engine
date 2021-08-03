@@ -146,6 +146,7 @@ class ExecutionService {
     
       process.stdout = {};
       process.stderr = {};
+      process.cwd = () => '/';
     
       const vm_1 = realRequire("vm");
       const path_1 = realRequire("path");
