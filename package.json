@@ -1,6 +1,6 @@
 {
   "name": "boltz",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Superfast JS serverless functions",
   "main": "./build/src/index.js",
   "scripts": {
