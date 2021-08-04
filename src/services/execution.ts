@@ -121,11 +121,18 @@ class ExecutionService {
 
     this.logs.log(`Initalizing VM ${instance._id}`);
 
+    const packageInfo = volume.readFileSync('/package.json').toString();
+    const packageJson = JSON.parse(packageInfo);
+
+    const indexJS = volume.readFileSync(packageJson.main).toString();
+
     /**
      * So the vm has access to the in memory volume
      */
     const patch = (`
     (() => {
+      const BOLTZ_main_filename = '${packageJson.main}';
+
       const realRequire = Object.assign(require);
     
       const isFilePathPattern = /^[./]+/;
@@ -190,7 +197,7 @@ class ExecutionService {
       const createFsRequire = (mfs) => {
           idCounter += 1;
           const fsRequireId = idCounter;
-          const moduleCache = new Map();
+          const moduleCache = {};
           function makeRequireFunction(parentModule) {
               const resolve = (modulePath) => {
                 let filename = path_1.resolve(path_1.dirname(parentModule.filename), modulePath);
@@ -203,7 +210,6 @@ class ExecutionService {
                         throw new Error(\`Cannot find module '\${modulePath}'\`);
                     }
                     filename = resolvedPath.filePath;
-                    pathExtension = resolvedPath.extension;
                 }
                 
                 return filename;
@@ -223,34 +229,31 @@ class ExecutionService {
                   }
                   
                   const filename = resolve(modulePath);
+                  const pathExtension = path_1.extname(filename);
 
-                  if (moduleCache.has(filename)) {
-                      return moduleCache.get(filename).exports;
+                  if (filename in moduleCache) {
+                      return moduleCache[filename].exports;
                   }
                   const newModule = new module_1(filename, parentModule);
                   newModule.filename = filename;
-                  moduleCache.set(filename, newModule);
+                  moduleCache[filename] = newModule;
                   const sourceCode = mfs.readFileSync(filename).toString();
                   loaders[pathExtension](newModule, sourceCode, makeRequireFunction, filename, fsRequireId);
                   console.log(newModule.exports);
                   return newModule.exports;
               };
               require.id = fsRequireId;
+              require.cache = moduleCache;
               require.resolve = resolve;
               return require;
           }
     
-          return makeRequireFunction({filename: '/'});
+          return makeRequireFunction({filename: BOLTZ_main_filename});
       };
       
       require = createFsRequire(require('fs'));
     })();
     `);
-
-    const packageInfo = volume.readFileSync('/package.json').toString();
-    const packageJson = JSON.parse(packageInfo);
-
-    const indexJS = volume.readFileSync(packageJson.main).toString();
 
     const sandboxDirectory = (process.env.production == 'true') ?
       config.json.execution.vms.sandboxDirectory.production :
@@ -390,8 +393,7 @@ class ExecutionService {
     try {
       vmExports.request(request, response);
     } catch (e) {
-      instancesLogging.log('error', `${e}`, instance._id || 'unknown_id');
-      throw e;
+      instancesLogging.log('error', `${e} ${e.stack || ''}`, instance._id || 'unknown_id');
     }
   }
 }
