@@ -6,6 +6,7 @@ build
 
 # distribution
 boltz-engine
+boltz-engine.zip
 
 # secrets and configs
 /config.json
