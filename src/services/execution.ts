@@ -174,7 +174,7 @@ class ExecutionService {
               filename: \`fs-require://\${id}\${filename}\`,
               lineOffset: 0,
               displayErrors: true,
-          })(newModule.exports, makeRequire(newModule), newModule, path_1.basename(filename), path_1.dirname(filename));
+          })(newModule.exports, makeRequire(newModule), newModule, path_1.posix.basename(filename), path_1.posix.dirname(filename));
       };
       loaders['.js'] = loaders[''];
       loaders['.json'] = function (newModule, sourceCode) {
@@ -200,11 +200,11 @@ class ExecutionService {
           const moduleCache = {};
           function makeRequireFunction(parentModule) {
               const resolve = (modulePath) => {
-                let filename = path_1.resolve(path_1.dirname(parentModule.filename), modulePath);
+                let filename = path_1.posix.resolve(path_1.posix.dirname(parentModule.filename), modulePath);
                 let pathExtension = (_b = filename.match(hasExtensionPattern)) === null || _b === void 0 ? void 0 : _b[0];
                 if (!pathExtension) {
                     const resolvedPath = isDirectory(mfs, filename)
-                        ? resolveImplicitExtension(mfs, path_1.join(filename, 'index'))
+                        ? resolveImplicitExtension(mfs, path_1.posix.join(filename, 'index'))
                         : resolveImplicitExtension(mfs, filename);
                     if (!resolvedPath) {
                         throw new Error(\`Cannot find module '\${modulePath}'\`);
@@ -229,7 +229,7 @@ class ExecutionService {
                   }
                   
                   const filename = resolve(modulePath);
-                  const pathExtension = path_1.extname(filename);
+                  const pathExtension = path_1.posix.extname(filename);
 
                   if (filename in moduleCache) {
                       return moduleCache[filename].exports;
@@ -392,7 +392,7 @@ class ExecutionService {
 
     try {
       vmExports.request(request, response);
-    } catch (e) {
+    } catch (e: any) {
       instancesLogging.log('error', `${e} ${e.stack || ''}`, instance._id || 'unknown_id');
     }
   }
