@@ -9,7 +9,8 @@
     "build": "tsc",
     "build:dev": "tsc -w",
     "pack": "npm run build && shx mkdir -p boltz-engine && shx cp -r ./build ./boltz-engine/build && shx cp -r ./dist/* ./boltz-engine && shx rm -r ./boltz-engine/**/*.map && shx cp ./package.json ./boltz-engine && shx cp -r ./public/ ./boltz-engine/public && shx cp ./README.md ./boltz-engine/README.md && shx chmod u+x ./boltz-engine/start.sh",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "docker:build": "docker build -t bsnk-dev/boltz-engine ."
   },
   "author": "bsnk-dev",
   "license": "ISC",
