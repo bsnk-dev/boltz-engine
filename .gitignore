@@ -23,6 +23,3 @@ database/
 
 # sandbox packages
 sandbox
-
-# admin interface
-public/
