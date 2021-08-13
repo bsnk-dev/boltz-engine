@@ -23,12 +23,14 @@ The Boltz Engine is a fast and clustered Node.js microservices engine, starting 
 
 ### Installation
 TODO: docker compose command using docker hub image
-DEVNOTES: Hello owner of this repo 👋 I will need you to build this docker image and push it to Docker hub, so it is registered under you. Also, adding versioning and doing this in release process would be awesome. How ot build image:
+How to build the docker image:
 
 ```
 $ npm i
 $ npm run docker:build
 ```
+
+Or pull from `bsnk/boltz-engine` on Docker Hub.
 
 ### VMs and Volumes
 Boltz let's you create VM instances to recieve and process web requests, and volumes to store code, configurations, and let you save data to a virtual disk temporarily. **All changes are cleared when the instance or volume needs to be reloaded.**
