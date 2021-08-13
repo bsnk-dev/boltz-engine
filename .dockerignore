@@ -1,0 +1,25 @@
+# node stuff
+node_modules/
+
+# built
+build
+
+# distribution
+boltz-engine
+boltz-engine.zip
+
+# secrets and configs
+/config.json
+/secrets.json
+*.key
+*.pem
+
+# database
+database/
+
+# ide
+.vscode/
+.VSCodeCounter/
+
+# sandbox packages
+sandbox

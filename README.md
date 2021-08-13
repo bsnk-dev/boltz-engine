@@ -21,6 +21,15 @@
 ### What it is
 The Boltz Engine is a fast and clustered Node.js microservices engine, starting instances from a cold start in 100ms, and subsequent interactions with functions fall under 10ms under normal conditions. V8 VM instances are used to seperate contexts and allow you to architect your code as self-hosted microservices interoperable with cloud based services. Multithreading means your instances are scaled across the the entire cluster over all your CPU cores. An admin api allows you to manage Boltz from the included admin interface.
 
+### Installation
+TODO: docker compose command using docker hub image
+DEVNOTES: Hello owner of this repo 👋 I will need you to build this docker image and push it to Docker hub, so it is registered under you. Also, adding versioning and doing this in release process would be awesome. How ot build image:
+
+```
+$ npm i
+$ npm run docker:build
+```
+
 ### VMs and Volumes
 Boltz let's you create VM instances to recieve and process web requests, and volumes to store code, configurations, and let you save data to a virtual disk temporarily. **All changes are cleared when the instance or volume needs to be reloaded.**
 
