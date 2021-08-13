@@ -23,3 +23,9 @@ database/
 
 # sandbox packages
 sandbox
+
+# unnesecary stuff
+logo.png
+.eslintrc.json
+.eslintignore
+.gitignore
