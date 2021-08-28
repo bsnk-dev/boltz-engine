@@ -81,6 +81,8 @@ class VolumesService {
     const loadedVolume = await this.getVolume(volumeID);
     const packageJSON = loadedVolume.readFileSync('/package.json');
 
+    if (!packageJSON) return;
+
     await packages.installPackages(packageJSON.toString(), volumeID);
   }
 

@@ -391,9 +391,11 @@ class ExecutionService {
     request.url = '/' + url.split('/').slice(2).join('/');
 
     try {
-      vmExports.request(request, response);
+      await vmExports.request(request, response);
     } catch (e: any) {
       instancesLogging.log('error', `${e} ${e.stack || ''}`, instance._id || 'unknown_id');
+      request.statusCode = 500;
+      request.destroy();
     }
   }
 }
