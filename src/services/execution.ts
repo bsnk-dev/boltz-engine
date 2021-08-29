@@ -291,7 +291,7 @@ class ExecutionService {
     vm.on('console.error', (data) => {
       instancesLogging.log('error', data, instanceID);
     });
-    vm.on('console.war', (data) => {
+    vm.on('console.warn', (data) => {
       instancesLogging.log('warn', data, instanceID);
     });
     vm.on('console.trace', (data) => {
