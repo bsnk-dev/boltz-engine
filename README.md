@@ -23,11 +23,12 @@ The Boltz Engine is a fast and clustered Node.js microservices engine, starting 
 
 ### Installation
 TODO: docker compose command using docker hub image
-How to build the docker image:
+
+Download from the releases page and then:
 
 ```
 $ npm i
-$ npm run docker:build
+$ npm run start
 ```
 
 Or pull from `bsnk/boltz-engine` on Docker Hub.
