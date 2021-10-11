@@ -8,7 +8,8 @@ COPY . .
 COPY ./dist ./
 RUN tsc
 
-ENV NODE_ENV=production
+ENV NODE_ENV=docker
+ENV production=true
 
 EXPOSE 5000 8000
 

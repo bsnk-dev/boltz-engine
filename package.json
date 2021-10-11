@@ -10,9 +10,9 @@
     "build:dev": "tsc -w",
     "pack": "npm run build && shx mkdir -p boltz-engine && shx cp -r ./build ./boltz-engine/build && shx cp -r ./dist/* ./boltz-engine && shx rm -r ./boltz-engine/**/*.map && shx cp ./package.json ./boltz-engine && shx cp -r ./public/ ./boltz-engine/public && shx cp ./README.md ./boltz-engine/README.md && shx chmod u+x ./boltz-engine/start.sh",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "docker:build": "docker build -t bsnk/boltz-engine .",
-    "docker:run": "docker run --publish 5000:5000 --publish 8000:8000 bsnk/boltz-engine",
-    "docker:push": "docker push bsnk/boltz-engine"
+    "docker:build": "cross-var docker build -t bsnk/boltz-engine:$npm_package_version .",
+    "docker:run": "cross-var docker run --publish 5000:5000 --publish 8000:8000 bsnk/boltz-engine:$npm_package_version",
+    "docker:push": "cross-var docker push bsnk/boltz-engine:$npm_package_version"
   },
   "author": "bsnk-dev",
   "license": "ISC",
@@ -26,6 +26,7 @@
     "@types/usage": "0.0.28",
     "@typescript-eslint/eslint-plugin": "^4.28.3",
     "@typescript-eslint/parser": "^4.28.3",
+    "cross-var": "^1.1.0",
     "eslint": "^7.31.0",
     "eslint-config-google": "^0.14.0",
     "nodemon": "^2.0.12",

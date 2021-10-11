@@ -1,4 +1,5 @@
 import {readFileSync} from 'fs';
+import {resolve} from 'path';
 import {Config as ConfigFile} from '../interfaces/config';
 import {SecretsConfig} from '../interfaces/secrets';
 
@@ -21,12 +22,13 @@ class Config {
 
     /**
      * Loads the config
+     * @param {string} configDir - The path where config files should be found
      * @param {string} filePath - The path to the configuration file
      * @return {void}
      */
-    constructor(filePath: string) {
-      this.filePath = filePath;
-      this.config = this.load(filePath) as ConfigFile;
+    constructor(configDir: string, filePath: string) {
+      this.filePath = resolve(configDir, filePath);
+      this.config = this.load(this.filePath) as ConfigFile;
 
       // load the secrets file based on the environment
       this.secretsConfig = this.load((process.env.production == 'true') ?
@@ -49,4 +51,7 @@ class Config {
     }
 }
 
-export default new Config('./config.json');
+export default new Config(
+  process.env.NODE_ENV == 'docker' ? '/boltz' : './',
+  './config.json',
+);
