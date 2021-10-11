@@ -11,7 +11,6 @@
     "pack": "npm run build && shx mkdir -p boltz-engine && shx cp -r ./build ./boltz-engine/build && shx cp -r ./dist/* ./boltz-engine && shx rm -r ./boltz-engine/**/*.map && shx cp ./package.json ./boltz-engine && shx cp -r ./public/ ./boltz-engine/public && shx cp ./README.md ./boltz-engine/README.md && shx chmod u+x ./boltz-engine/start.sh",
     "test": "echo \"Error: no test specified\" && exit 1",
     "docker:build": "cross-var docker build -t bsnk/boltz-engine:$npm_package_version .",
-    "docker:run": "cross-var docker run --publish 5000:5000 --publish 8000:8000 bsnk/boltz-engine:$npm_package_version",
     "docker:push": "cross-var docker push bsnk/boltz-engine:$npm_package_version"
   },
   "author": "bsnk-dev",

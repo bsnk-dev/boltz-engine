@@ -22,16 +22,25 @@
 The Boltz Engine is a fast and clustered Node.js microservices engine, starting instances from a cold start in 100ms, and subsequent interactions with functions fall under 10ms under normal conditions. V8 VM instances are used to seperate contexts and allow you to architect your code as self-hosted microservices interoperable with cloud based services. Multithreading means your instances are scaled across the the entire cluster over all your CPU cores. An admin api allows you to manage Boltz from the included admin interface.
 
 ### Installation
-TODO: docker compose command using docker hub image
+Download from the releases page and then run the start.sh or start.bat file to install and run Boltz.
 
-Download from the releases page and then:
+Or pull from `bsnk/boltz-engine` on Docker Hub and setup the following steps:
 
+1. Create a config.json and secrets.json -- you can download these from a release on the releases page
+2. Place them in a folder
+3. Run the docker image with 
 ```
-$ npm i
-$ npm run start
+    $ docker run \
+    --publish 5000:5000 \
+    --publish 8000:8000 \
+    -v /boltz-data:/boltz \
+    -v /boltz-data:/secrets/ \
+    -v /boltz-data:/database \
+    -v /boltz-data/sandbox:/sandbox/ \
+    bsnk/boltz-engine:latest
 ```
 
-Or pull from `bsnk/boltz-engine` on Docker Hub.
+You can change these folders to fit your liking and customize the ports it uses in config.json and in the start command. You should probably also use a version of boltz like ``1.1.0`` instead of latest to make sure bugs don't appear in production. /boltz is where it will look for the config.json file inside of the container, and the rest can be customized according to the documentation.
 
 ### VMs and Volumes
 Boltz let's you create VM instances to recieve and process web requests, and volumes to store code, configurations, and let you save data to a virtual disk temporarily. **All changes are cleared when the instance or volume needs to be reloaded.**
