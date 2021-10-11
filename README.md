@@ -27,7 +27,7 @@ Download from the releases page and then run the start.sh or start.bat file to i
 Or pull from `bsnk/boltz-engine` on Docker Hub and setup the following steps:
 
 1. Create a config.json and secrets.json -- you can download these from a release on the releases page
-2. Place them in a folder
+2. Place them in a folder, here would be ``boltz-data``
 3. Run the docker image with 
 ```
     $ docker run \
